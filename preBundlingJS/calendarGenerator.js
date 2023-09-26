@@ -12,7 +12,7 @@ import {
   getDaysInMonth, generateRandomString, getEarliestDate,
   preloadDates, blockDaysNotOpen, humanDate, clearSelection
 } from './basicFunctions.js';
-import { displayTimeChooserModal, getSelectedTimes } from './displayTimeChooserModal.js';
+import { displayTimeChooserModal, getSelectedTimes, writeTimesToAll } from './displayTimeChooserModal.js';
 import { colours, selectedStyle, unselectedStyle } from './styles.js';
 import { languages } from './languages.js';
 import style from './calendarApp.css';
@@ -39,13 +39,29 @@ customElements.define('swift-cal', class extends HTMLElement {
   constructor () {
     super();
     const self = this;
-    // data-number-of-months-to-display html converts to numberOfMonthsToDisplay JS
-    const numberOfMonthsToDisplay = this.dataset.numberOfMonthsToDisplay;
+    function stToBoolean (st) {
+      console.log(st)
+      if(st === 'true') {
+        return true;
+      }
+      return false;
+    }
+    
     const calendar = new SwiftCal();
     calendar.generateCalendar(
       {
         target: self,
-        numberOfMonthsToDisplay: numberOfMonthsToDisplay
+        // data-number-of-months-to-display html converts to numberOfMonthsToDisplay JS
+        numberOfMonthsToDisplay: this.dataset.numberOfMonthsToDisplay,
+        // data-display-time-chooser-modal
+        displayTimeChooserModal: stToBoolean(this.dataset.displayTimeChooserModal),
+        // data-single-date-choice
+        singleDateChoice: stToBoolean(this.dataset.singleDateChoice),
+
+        language: this.dataset.language,
+        //data-select-multiple
+        selectMultiple: this.dataset.selectMultiple
+
       });
     this.dynamicData = calendar.returnDynamicData();
   }
@@ -53,13 +69,41 @@ customElements.define('swift-cal', class extends HTMLElement {
 
 function SwiftCal () {
   const config = {};
-  const calendar = document.createElement('div');
 
-  const dynamicData = {
+  const handler = {
+    get: (target, key) => {
+      if(typeof target[key] === 'object' && target[key] !== null) {
+        return new Proxy(target[key], handler);
+      }
+
+      if(Array.isArray(target) && typeof target[0] === 'object' && Object.keys(target[0]).includes('times')){
+        emitDateSelectedEvent();
+      }
+      return target[key];
+    },
+    set: (target, prop, value) => {
+      target[prop] = value;
+      emitDateSelectedEvent();
+      return true;
+    }
+  }
+  
+  const dataTemplate = {
     datesSelectedArray: [],
     datesSelectedArrayObjects: [],
     disabled: false
   };
+
+  const dynamicData = new Proxy(dataTemplate, handler);
+
+  function emitDateSelectedEvent () {
+    setTimeout(() => {
+      const evt = new CustomEvent('dateSelect', { data: dynamicData });
+      config.calendarContainer.dispatchEvent(evt);
+    }, 250)
+  }
+  
+  const calendar = document.createElement('div');
 
   this.returnCalendar = () => {
     return calendar;
@@ -81,9 +125,9 @@ function SwiftCal () {
     // done
     config.numberOfMonthsToDisplay = configObj.numberOfMonthsToDisplay || 12;
     // done
-    config.displayTimeChooserModal = configObj.displayTimeChooserModal || true;
+    config.displayTimeChooserModal = configObj.displayTimeChooserModal && true;
     // done
-    config.singleDateChoice = configObj.singleDateChoice || false;
+    config.singleDateChoice = configObj.singleDateChoice && true;
     // done
     config.selectRange = !configObj.singleDateChoice;
     // done
@@ -103,6 +147,7 @@ function SwiftCal () {
 
   this.generateCalendar = (configObj) => {
     if (configObj) {
+      console.log(configObj);
       this.setConfig(configObj);
     }
     // If called via javascript a parentElement needs to be provided
@@ -149,8 +194,8 @@ function SwiftCal () {
     const endUserDurationChoice = config.endUserDurationChoice;
     const backend = config.backend;
     const displayBlocked = config.displayBlocked;
-    const singleDateChoice = false;
-    const selectRange = !config.singleDateChoice;
+    const singleDateChoice = config.singleDateChoice;
+    const selectRange = config.selectRange;
 
     let uniqueDayIndex = 0;
     // Calendar is defined globally within the constructor
@@ -264,6 +309,7 @@ function SwiftCal () {
   let clickCount = 1;
 
   function dateOnClickEvents (e) {
+  
     const dateDiv = e.target;
     clickCount++;
 
@@ -372,9 +418,13 @@ function SwiftCal () {
         newArray.push(dateDiv.dataset.humandate);
         newObjectsArray[newArray.length - 1] = standardDateObject(dateDiv);
       }
+      if (config.singleDateChoice && config.displayTimeChooserModal) {
+        displayTimeChooserModal(calendar, config, dynamicData);
+      }
       // time picker for multiple consecutive dates.
       if (config.displayTimeChooserModal && startDate !== endDate) {
         displayTimeChooserModal(calendar, config, dynamicData);
+        writeTimesToAll();
       }
       // time picker fo single date:
       if (config.displayTimeChooserModal && config.singleDateChoice) {

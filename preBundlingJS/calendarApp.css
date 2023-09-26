@@ -6,6 +6,7 @@
   width: 100%;
   height: 28.8em;
   overflow-y: auto;
+  position: relative;
 }
 .calendar .blocked {
   background-color: #333;
@@ -122,6 +123,9 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
   position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 .calendar .calendarLabel {
   min-width: 3em;
@@ -231,5 +235,3 @@
 .calendar .dayTime > * {
   pointer-events: none;
 }
-
-/*# sourceMappingURL=calendarApp.css.map */

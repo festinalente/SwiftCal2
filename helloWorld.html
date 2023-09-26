@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<head>
+  <!-- defer is required so attributes are read before the script is loaded. Alternatively
+  load scripts in the foot of the page -->
+  <script defer src="./clientSideJS/calendar.js"></script>
+  <style>
+    .code {
+      border-left-style: solid;
+      border-left-width: 2px;
+      border-left-color: #333;
+      background-color: rgb(241, 239, 239);
+      font-family: 'Ubuntu mono';
+      font-size: 1em;
+      width: fit-content;
+      padding: 1em;
+      display: block;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="demos"></div>
+</body>
+
+<script>
+  const demoData = [
+    {
+      title: `Bellow is a calendar rendering default values and settings`,
+      html: `<swift-cal></swift-cal>`
+    },
+    {
+    title: 'Bellow is a calendar in Portuguese, with three months allowing a single date to be selected',
+    html: `<swift-cal 
+            data-number-of-months-to-display="3" 
+            data-language="ptPt" 
+            data-single-date-choice="true">
+          </swift-cal>`
+    },
+    {
+      title: `Bellow is a calendar in English that allows multiple date ranges to be selected and times added
+    for each date in the range:`,
+      html: `<swift-cal data-display-time-chooser-modal="true"></swift-cal>`
+    },
+    {
+      titte: `Bellow is a calendar in Portuguese, with two months, allowing multiple date range selections`,
+      html: `<swift-cal data-number-of-months-to-display="2" data-language="ptPt"></swift-cal>`
+    },
+    {
+      title: `Bellow is a calendar in English, with three months allowing a single date to be selected that also toggles a time picker`,
+      html: `<swift-cal 
+              data-number-of-months-to-display="3" 
+              data-language="enGb" 
+              data-single-date-choice="true"
+              data-display-time-chooser-modal="true">
+            </swift-cal>`
+    }
+  ];
+
+  function generateView (demoData) {
+    const parent = document.querySelector('.demos');
+    const title = document.createElement('h3');
+    title.textContent = demoData.title;
+    parent.appendChild(title);
+    
+    const markup = document.createElement('h4');
+    markup.textContent = "The html:";
+    parent.appendChild(markup);
+
+    const htmlExample = document.createElement('div');
+    htmlExample.classList.add('code');
+    htmlExample.textContent = demoData.html
+    parent.appendChild(htmlExample);
+
+    const result = document.createElement('h4');
+    result.textContent = "The result:";
+    parent.appendChild(result);
+
+    const example = document.createElement('div');
+    example.innerHTML = demoData.html;
+    parent.appendChild(example);
+
+    const selectData = document.createElement('h4');
+    selectData.textContent = "Select dates to see stored data:";
+    parent.appendChild(selectData);
+
+    const userData = document.createElement('div');
+    userData.classList.add('code');
+    parent.appendChild(userData);
+
+    example.querySelector('swift-cal').addEventListener(
+      'dateSelect',
+      (e) => {
+        userData.innerHTML = JSON.stringify(e.target.dynamicData);
+      },
+      false,
+    );
+  }
+
+  demoData.forEach((data) => {
+    generateView(data);
+  });
+  
+</script>

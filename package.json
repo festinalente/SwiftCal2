@@ -1,0 +1,26 @@
+{
+  "name": "swiftcal2",
+  "version": "1.0.0",
+  "description": "A webcomponent calendar and time picker",
+  "keywords": [
+    "calendar",
+    "time picker"
+  ],
+  "author": "Tomás Swift-Metcalfe",
+  "license": "LGPL-3.0-only",
+  "devDependencies": {
+    "grunt": "^1.6.1",
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "browserify-css": "^0.15.0",
+    "grunt-babel": "^8.0.0",
+    "grunt-browserify": "^6.0.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-sass": "^3.1.0",
+    "sass": "^1.65.1"
+  }
+}

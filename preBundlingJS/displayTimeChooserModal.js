@@ -221,6 +221,11 @@ function writeToDateDiv () {
     //generateTimeValuesOnDate(timeValues);
   }
 }
+
+function writeTimesToAll () {
+  writeToDateDiv();
+}
+
 function displayTimeChooserModal (cal, conf, data) {
   calendar = cal;
   config = conf;
@@ -239,4 +244,4 @@ function getSelectedTimes () {
   return selection;
 }
 
-export { displayTimeChooserModal, getSelectedTimes };
+export { displayTimeChooserModal, getSelectedTimes, writeTimesToAll };
