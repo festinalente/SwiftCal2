@@ -1,5 +1,7 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/tomasMetcalfe/swiftcal2)
 # SwiftCal2
+SwiftCal2 is a calendar, date picker and time picker for real world locations.
+
 This was a learning exercise to learn ESM better, how to use it in the browser and how to use the shadowDOM and build
 web component. SwiftCal an old project of mine using a monolythic constructor was rewritten ESM, then transpiled to normal js with Babel and Browserify producing the file ./clientSideJS/calendar.js
 
