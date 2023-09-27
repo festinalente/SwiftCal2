@@ -77,15 +77,12 @@ function checkOverlap (values) {
  * @return {undefined}
  */
 function clearSelection (calendar, dynamicData) {
-  console.log(dynamicData);
   const datesObjStore = dynamicData.datesSelectedArrayObjects;
   const datesIndex = dynamicData.datesSelectedArray;
 
   for (let i = 0; i < datesObjStore.length; i++) {
     for (let j = 0; j < datesIndex.length; j++) {
-      console.log(datesIndex[j]);
       datesIndex[j].forEach((date) => {
-        console.log(date);
         unselectedStyle(calendar.querySelector(`[data-humandate='${date}']`));
         if (i === datesObjStore.length - 1 && j === datesIndex.length - 1) {
           datesObjStore.length = 0;

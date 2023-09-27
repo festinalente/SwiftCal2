@@ -6,6 +6,9 @@ module.exports = (grunt) => {
       dist: {
         files: {
           'clientSideJS/calendar.js': [
+            'preBundlingJS/*.css',
+            'preBundlingJS/*.js',
+            /*
             'preBundlingJS/calendarApp.css',
             'preBundlingJS/basicFunctions.js',
             'preBundlingJS/calendarGenerator.js',
@@ -17,6 +20,7 @@ module.exports = (grunt) => {
             'preBundlingJS/erros.js',
             'preBundlingJS/languages.js',
             'preBundlingJS/styles.js'
+            */
           ]
         },
         options: {

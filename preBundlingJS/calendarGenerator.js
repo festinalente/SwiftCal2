@@ -12,7 +12,7 @@ import {
   getDaysInMonth, generateRandomString, getEarliestDate,
   preloadDates, blockDaysNotOpen, humanDate, clearSelection
 } from './basicFunctions.js';
-import { displayTimeChooserModal, getSelectedTimes, writeTimesToAll } from './displayTimeChooserModal.js';
+import { GenerateTimeChooserModal } from './displayTimeChooserModal.js';
 import { colours, selectedStyle, unselectedStyle } from './styles.js';
 import { languages } from './languages.js';
 import style from './calendarApp.css';
@@ -40,7 +40,6 @@ customElements.define('swift-cal', class extends HTMLElement {
     super();
     const self = this;
     function stToBoolean (st) {
-      console.log(st)
       if(st === 'true') {
         return true;
       }
@@ -68,6 +67,9 @@ customElements.define('swift-cal', class extends HTMLElement {
 });
 
 function SwiftCal () {
+  let timeChooser;
+  // for nested functions to access the outer object
+  const innerThis = this; 
   const config = {};
 
   const handler = {
@@ -76,9 +78,6 @@ function SwiftCal () {
         return new Proxy(target[key], handler);
       }
 
-      if(Array.isArray(target) && typeof target[0] === 'object' && Object.keys(target[0]).includes('times')){
-        emitDateSelectedEvent();
-      }
       return target[key];
     },
     set: (target, prop, value) => {
@@ -147,7 +146,6 @@ function SwiftCal () {
 
   this.generateCalendar = (configObj) => {
     if (configObj) {
-      console.log(configObj);
       this.setConfig(configObj);
     }
     // If called via javascript a parentElement needs to be provided
@@ -157,7 +155,6 @@ function SwiftCal () {
       If called via JS while the component isn't a webcomponent in the strictest sense, it still
       behaves like one and is encapsulated in a shadow.
     */
-
     if (config.calendarContainer) {
       shadowAttach(config.calendarContainer);
     } else {
@@ -188,14 +185,13 @@ function SwiftCal () {
     const numberOfMonthsToDisplay = config.numberOfMonthsToDisplay;
     const datesOpen = config.datesOpen;
     const language = config.language;
-    // TODO:
     const displayTimeChooserModal = config.displayTimeChooserModal;
+    
+    // TODO:
     const endUser = config.endUser;
     const endUserDurationChoice = config.endUserDurationChoice;
     const backend = config.backend;
     const displayBlocked = config.displayBlocked;
-    const singleDateChoice = config.singleDateChoice;
-    const selectRange = config.selectRange;
 
     let uniqueDayIndex = 0;
     // Calendar is defined globally within the constructor
@@ -303,6 +299,11 @@ function SwiftCal () {
         preloadDates(calendar, preloadedDates);
         blockDaysNotOpen(calendar, datesOpen);
       }
+    }
+
+    if(displayTimeChooserModal) {
+      timeChooser = new GenerateTimeChooserModal(config, dynamicData, calendar);
+      timeChooser.generateModal();
     }
   };
 
@@ -419,16 +420,15 @@ function SwiftCal () {
         newObjectsArray[newArray.length - 1] = standardDateObject(dateDiv);
       }
       if (config.singleDateChoice && config.displayTimeChooserModal) {
-        displayTimeChooserModal(calendar, config, dynamicData);
+        timeChooser.show();
       }
       // time picker for multiple consecutive dates.
       if (config.displayTimeChooserModal && startDate !== endDate) {
-        displayTimeChooserModal(calendar, config, dynamicData);
-        writeTimesToAll();
+        timeChooser.show();
       }
       // time picker fo single date:
       if (config.displayTimeChooserModal && config.singleDateChoice) {
-        displayTimeChooserModal(calendar, config, dynamicData);
+        timeChooser.show();
       }
     }
   }
@@ -440,12 +440,14 @@ function SwiftCal () {
    * @return {object} The standard date object with the given date.
    */
   function standardDateObject (date) {
-    return {
+    const times = (timeChooser) ? timeChooser.getSelectedTimes() : []
+    const obj = {
       day: date.dataset.day,
       humandate: date.dataset.humandate,
       index: date.dataset.dayindex,
-      times: getSelectedTimes()
-    };
+      times: times
+    }; 
+    return obj;
   }
 }
 

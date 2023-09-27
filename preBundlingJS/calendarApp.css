@@ -126,6 +126,7 @@
   margin: 0;
   padding: 0;
   border: 0;
+  overflow-x: scroll;
 }
 .calendar .calendarLabel {
   min-width: 3em;
