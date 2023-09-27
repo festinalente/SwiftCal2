@@ -7,4 +7,6 @@ Where a primary user can submit an array of dates to block.
 
 ## Select or block by day of week
 Wehere an index number is passed corresponding to the days of the week to which
-to apply the same treatment (e.g. block all mondays). 
+to apply the same treatment (e.g. block all mondays).
+
+## Write more tests and integrate a testing suite. 
