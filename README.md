@@ -18,8 +18,7 @@ web component. SwiftCal an old project of mine using a monolythic constructor wa
 <h3>A calendar render from js</h3>
 <div class='eg'></div>
 <script>
-
-  const cal = new calendar.SwiftCal();
+ew calendar.SwiftCal();
   cal.generateCalendar({ 
     parentDiv: '.eg', 
     numberOfMonthsToDisplay: 3,
@@ -31,8 +30,10 @@ web component. SwiftCal an old project of mine using a monolythic constructor wa
 https://codepen.io/tomasMetcalfe/pen/PoXRQKJ
 
 ## Contribute
-Simply git clone the repo, then on your machine run npm install, then cd (change directory) into the folder with SwiftCal2 and run grunt watch and start hacking away. The quickest way to then see changes is to copy examples.html in the root to another html file, and open that file in a browser. 
+To contibute simply git clone the repo, then on your machine run npm install, then cd (change directory) into the folder with SwiftCal2 and run grunt watch and start hacking away. The quickest way to then see changes is to copy examples.html in the root to another html file, and open that file in a browser. 
 ### Contributions wanted: 
 Languages come to mind... I have added English (enGb) and Portuguese (ptPt), others are welcome. See
-"languages.js in the folder "proBundlingJS
+"languages.js in the folder "proBundlingJS"
+
+
 
