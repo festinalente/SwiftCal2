@@ -20,7 +20,7 @@ web component. SwiftCal an old project of mine using a monolythic constructor wa
 <h3>A calendar render from js</h3>
 <div class='eg'></div>
 <script>
-ew calendar.SwiftCal();
+  new calendar.SwiftCal();
   cal.generateCalendar({ 
     parentDiv: '.eg', 
     numberOfMonthsToDisplay: 3,
