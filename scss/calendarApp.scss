@@ -1,3 +1,5 @@
+@import "variables.scss";
+
 .calendar {
   display: flex;
   flex-wrap: wrap;
@@ -15,6 +17,12 @@
   .filler {
     pointer-events: none;
     opacity: 0.3;
+  }
+
+  .preloaded {
+    border-color: $preloaded-border-color;
+    border-style: solid;
+    border-width: 3px;
   }
 
   .timeSelect {

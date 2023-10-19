@@ -1,14 +1,20 @@
 import { languages } from './languages.js';
 
 /**
- * Creates dialog for selecting specific times
- * @function createTimeElements
- * @param {HTMLElement} calendar - The calendar element
- * @returns {promise} - Empty promise. The actual div is in this code on "timeChooserModal"
-*/
-
+ * Generates a time chooser modal for selecting time. Called in calendarGenerator.js
+ *
+ * @param {Object} config - The configuration object. 
+ * @param {Object} dynamicData - The dynamic data object.
+ * @param {HTMLElement} calendar - The calendar element.
+ * @return {Function} The generated time chooser modal.
+ */
 function GenerateTimeChooserModal (config, dynamicData, calendar) {
 
+  /**
+   * A custom event emitted when a time is added or selected
+   *
+   * @return {void} This function does not return any value.
+   */
   function emitTimeSelectedEvent () {
     setTimeout(() => {
       const evt = new CustomEvent('timeSelect', { data: dynamicData });
@@ -37,10 +43,16 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
     writeToDateDiv();
   }
 
+/**
+ * Generates a dialog for choosing time.
+ *
+ * @return {Promise} A promise that resolves to the generated time chooser modal.
+ */
   function generateModal() {
     const promise = new Promise((resolve, reject) => {
 
-      timeChooserModal = createModal('timeChooserModal');
+      timeChooserModal = document.createElement('dialog');
+      timeChooserModal.classList.add('timeChooserModal');
       calendar.appendChild(timeChooserModal);
   
       const timeCont = document.createElement('div');
@@ -113,32 +125,11 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
           const fieldName = Object.keys(timeValue)[0];
           createNewPara(`${fieldName}:`);
           createNewPara(`${timeValue[fieldName].hh}:${timeValue[fieldName].mm}`);
-          
-          /*
-          if (dayInPoint.classList.contains('filler') === false) {
-            dayInPoint.style.backgroundColor = '#fc3';
-            if (i % 2 === 1) {
-              time.style.borderBottomStyle = 'solid';
-              dayInPoint.appendChild(time);
-              textinternal = '';
-            } else {
-              dayInPoint.appendChild(time);
-              textinternal = '';
-            }
-          }*/
         });
       }
-  
-      //generateTimeValuesOnDate(timeValues);
     }
   }
 
-  function createModal (className) {
-    const modal = document.createElement('dialog');
-    modal.classList.add(className);
-    return modal;
-  }
-  
   function makeButton (parent, className, textContent, hoverText, action, fn) {
     const button = document.createElement('button');
     button.classList.add(className);
@@ -156,15 +147,8 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
     container.dataset.context = contextText;
     timePickerContainer.appendChild(container);
   
-    // The storage object
-    // selection.push([]);
-  
-    // timeObj =  [[]]
-    // const timesObj = selection[selection.length - 1];
-  
     const timeForContext = { [contextText]: {} };
   
-    // timesObj.push(timeForContext);
     selection.push(timeForContext);
   
     // Make label
@@ -234,20 +218,4 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
   }
 }
 
-function displayTimeChooserModal (cal, conf, data) {
-  calendar = cal;
-  config = conf;
-  dynamicData = data;
-  if (timeChooserModal) {
-    timeChooserModal.show();
-  } else {
-    generateTimeChooserModal().then((newModal) => {
-      timeChooserModal = newModal;
-      timeChooserModal.show();
-    });
-  }
-}
-
 export { GenerateTimeChooserModal };
-
-//, displayTimeChooserModal, getSelectedTimes, writeTimesToAll 

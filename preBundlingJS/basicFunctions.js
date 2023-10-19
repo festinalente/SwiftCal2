@@ -2,6 +2,18 @@ import { selectedStyle, unselectedStyle } from './styles.js';
 import { config, calendar, lastDateClicked } from './calendarGenerator.js';
 import { displayTimeChooserModal, getSelectedTimes } from './displayTimeChooserModal.js';
 
+
+	// utility to return date in correct format
+	function formatDate (d) {
+		const date = (d) ? new Date(d) : new Date();
+		const day = date.getDate();
+		const month = (date.getMonth() + 1);
+		const year = date.getFullYear();
+		const formated = `${year}-${month}-${day}`;
+		return formated;
+	};
+
+
 /**
  * Calculates the time value in milliseconds based on the given time.
  *
@@ -164,6 +176,7 @@ function convertDates (dates) {
   return promise;
 }
 
+
 /**
  * Asynchronously preloads dates for the calendar.
  *
@@ -172,10 +185,10 @@ function convertDates (dates) {
  * @return {void} 
  */
 async function preloadDates (calendar, dates) {
-  // console.log('PRELOADING DATES...');
+  console.log('PRELOADING DATES...');
   // console.log(calendar);
   // console.log(dates);
-  dates = ['2023-09-09']
+  dates = ['2023-10-10']
   let endUser = 1;
   //attach(dateNode);
   await convertDates(dates);
@@ -324,7 +337,7 @@ function releaseDayOfWeekG(dayId) {
 }
 
 export { timeValueInMill, checkOverlap, clearSelection, getDaysInMonth, generateRandomString, getEarliestDate,
-  preloadDates, blockDaysNotOpen, releaseBookedDay, humanDate, sortTimes };
+  preloadDates, blockDaysNotOpen, releaseBookedDay, humanDate, sortTimes, formatDate };
 
 //bookDay singleDateChoice
 //releaseBookedDay datesSelectedArrayObjects datesSelectedArray

@@ -23,10 +23,45 @@
 </body>
 
 <script>
+
+  function datesInFuture () {
+    const dates = [];
+   
+   
+    function generateDate (offset) {
+      const timeStamp = Date.now();
+      const addOffset = (timeStamp + (60 * 60 * 24 * 1000 * offset));
+      const date = new Date(addOffset);
+      let day = date.getDate();
+      (day.toString().length === 1) ? day = `0${day}` : day;
+      const month = (date.getMonth() + 1);
+      const year = date.getFullYear();
+      const formated = `${year}-${month}-${day}`;
+      return formated;
+    }
+    for (let i = 10; i < 23; i++) {
+      dates.push(generateDate(i)); 
+    }
+
+    for (let i = 30; i < 43; i++) {
+      dates.push(generateDate(i)); 
+    }
+    return JSON.stringify(dates);
+  }
+
   const demoData = [
     {
       title: `Bellow is a calendar rendering default values and settings`,
       html: `<swift-cal></swift-cal>`
+    },
+    {
+      title: `Bellow is a calendar with preloaded dates, dates are highlighted in cyan and tooltip text can be added.
+      Note that the preloaded dates are a sting representation of an array.`,
+      html: `<swift-cal
+              data-preloaded-dates=${datesInFuture()}
+              data-preloaded-tooltip='This date is available'
+              >
+            </swift-cal>`
     },
     {
     title: 'Bellow is a calendar in Portuguese, with three months allowing a single date to be selected',

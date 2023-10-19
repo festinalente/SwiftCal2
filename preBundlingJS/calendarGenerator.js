@@ -10,7 +10,7 @@
 
 import {
   getDaysInMonth, generateRandomString, getEarliestDate,
-  preloadDates, blockDaysNotOpen, humanDate, clearSelection
+  blockDaysNotOpen, humanDate, clearSelection
 } from './basicFunctions.js';
 import { GenerateTimeChooserModal } from './displayTimeChooserModal.js';
 import { colours, selectedStyle, unselectedStyle } from './styles.js';
@@ -59,9 +59,14 @@ customElements.define('swift-cal', class extends HTMLElement {
 
         language: this.dataset.language,
         //data-select-multiple
-        selectMultiple: this.dataset.selectMultiple
+        selectMultiple: this.dataset.selectMultiple,
+
+        preloadedDates: (this.dataset.preloadedDates) ? JSON.parse(this.dataset.preloadedDates) : false,
+
+        preloadedTooltip: this.dataset.preloadedTooltip
 
       });
+
     this.dynamicData = calendar.returnDynamicData();
   }
 });
@@ -135,8 +140,11 @@ function SwiftCal () {
     config.selectMultiple = config.selectMultiple || false;
     // done
     config.displayTimeSelectionOnDate = configObj.displayTimeSelectionOnDate || true;
+    // done
+    config.preloadedDates = configObj.preloadedDates || false;
 
-    config.preloadedDates = configObj.preloadedDates || [];
+    config.preloadedTooltip = configObj.preloadedTooltip || false;
+
     config.endUser = configObj.endUser || false;
     config.endUserDurationChoice = configObj.endUserDurationChoice || false;
     config.backend = configObj.backend || false;
@@ -145,9 +153,12 @@ function SwiftCal () {
   };
 
   this.generateCalendar = (configObj) => {
+    console.log(JSON.parse(JSON.stringify(configObj)));
     if (configObj) {
       this.setConfig(configObj);
     }
+    console.log(configObj)
+    
     // If called via javascript a parentElement needs to be provided
     const parentDiv = config.parentDiv;
     /*
@@ -296,14 +307,16 @@ function SwiftCal () {
         }
       }
       if (i === numberOfMonthsToDisplay - 1) {
-        preloadDates(calendar, preloadedDates);
         blockDaysNotOpen(calendar, datesOpen);
       }
     }
-
+    // Options:
     if(displayTimeChooserModal) {
       timeChooser = new GenerateTimeChooserModal(config, dynamicData, calendar);
       timeChooser.generateModal();
+    }
+    if(preloadedDates) {
+      preloadDates(preloadedDates);
     }
   };
 
@@ -387,7 +400,30 @@ function SwiftCal () {
     const { newArray, newObjectsArray } = createNewSelection();
     for (let i = 0; i < arrayOfDateDivs.length; i++) {
       const dateDiv = arrayOfDateDivs[i];
+      findDateSelection(dateDiv);
       bookDay(dateDiv);
+    }
+
+    // if the date is in a previous selection, that selection is spliced
+    function findDateSelection (date) {
+      // console.log(date);
+      const store = dynamicData.datesSelectedArrayObjects;
+      for(let j = 0; j < store.length; j++){
+        // the array in question
+        const singleSelection = store[j];
+        // data attr of html element
+        const dateValue = date.dataset.humandate;
+        const search = () => singleSelection.find( (dateStored) => dateStored.humandate === dateValue);
+        if(search()) {
+          singleSelection.forEach((date) => {
+            // remove selection colour
+            unselectedStyle(calendar.querySelector(`[data-humandate='${date.humandate}']`));
+          });
+          // remove from storage
+          dynamicData.datesSelectedArrayObjects.splice(j, 1);
+          dynamicData.datesSelectedArray.splice(j, 1);
+        }
+      }
     }
 
     const startDate = newObjectsArray[0];
@@ -432,6 +468,47 @@ function SwiftCal () {
       }
     }
   }
+
+  function preloadDates (preloadedDates) {
+    
+    function getDivs (dates) {
+      const dateDivs = [];
+      const promise = new Promise((resolve, reject) => {
+        dates.forEach((date, i) => {
+          const dateDiv = calendar.querySelector(`[data-humandate='${date}']`);
+          console.log(dateDiv);
+          console.log(`[data-humandate='${date}']`);
+          dateDivs.push(dateDiv);
+          if (i === preloadedDates.length - 1) {
+            blockNotPreloadedDates (dateDivs);
+            resolve(dateDivs);
+          }
+        })
+      });
+      return promise;
+    }
+
+    function blockNotPreloadedDates (dateDivs) {
+      const nonOptions = calendar.querySelectorAll('.dayTime');
+      for (let index = 0; index < nonOptions.length; index++) {
+        const day = nonOptions[index];
+        if(!dateDivs.includes(day)){
+          day.classList.add('filler');
+        }
+        else {
+          day.classList.add('preloaded');
+          day.title = config.preloadedTooltip;
+        } 
+      }
+    }
+
+    getDivs(preloadedDates).then((dateDivs) => {
+      // bookDates(dateDivs);
+    })
+
+  }   
+
+
 
   /**
    * Creates a standard date object with the given date.
