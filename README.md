@@ -1,11 +1,6 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/tomasMetcalfe/swiftcal2)
 # SwiftCal2
-SwiftCal2 is a calendar, date picker and time picker for real world locations, i.e. times are context dependent (e.g. the location of a shop) rather than universal (e.g. via a timestamp). 
-
-To edit, extend or alter anything simply clone the repo and then run "grunt watch", any edits you make to the scss (to change appearance) or to the JS (the files in /preBundlingJS) will be compiled. 
-
-This was a learning exercise to learn ESM better, how to use it in the browser and how to use the shadowDOM and build
-web component. SwiftCal an old project of mine using a monolythic constructor was rewritten ESM, then transpiled to normal js with Babel and Browserify producing the file ./clientSideJS/calendar.js
+SwiftCal2 is a calendar, date picker and time picker for real world locations, i.e. times are context dependent (e.g. the location of a shop) rather than universal (e.g. via a timestamp). It allows multiple ranges and times to be selected and preselected.
 
 <!--
 ```
@@ -32,6 +27,9 @@ web component. SwiftCal an old project of mine using a monolythic constructor wa
 ```
 ## A few more examples can be found here: 
 https://codepen.io/tomasMetcalfe/pen/PoXRQKJ
+
+## Some docs and explanations are her: 
+https://festinalente.github.io/SwiftCal2/
 
 ## Contribute
 To contibute simply git clone the repo, then on your machine run npm install, then cd (change directory) into the folder with SwiftCal2 and run grunt watch and start hacking away. The quickest way to then see changes is to copy examples.html in the root to another html file, and open that file in a browser. 

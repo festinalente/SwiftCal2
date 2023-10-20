@@ -171,6 +171,7 @@ function SwiftCal () {
     } else {
       newContainer().then((container) => {
         shadowAttach(container);
+        config.calendarContainer = container;
       });
     }
 

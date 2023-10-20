@@ -1,9 +1,5 @@
-## End User functionality
-Where dates are supplied to the calendar by a primary user (user a business)
-and an end user can select a selection of these dates. 
 
-## Block dates
-Where a primary user can submit an array of dates to block. 
+## Convert and save timestamps with dates.  
 
 ## Specific blocks of time
 
