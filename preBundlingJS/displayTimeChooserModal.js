@@ -43,6 +43,10 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
     writeToDateDiv();
   }
 
+  this.writeToDynamicData = () => {
+    writeToDynamicData();
+  };
+
 /**
  * Generates a dialog for choosing time.
  *
@@ -93,10 +97,8 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
 
   function writeToDateDiv () {
     if (config.displayTimeSelectionOnDate) {
-      dynamicData.datesSelectedArray.forEach((childArray) => {
-        childArray.forEach((daySelected) => {
-          write(daySelected);
-        });
+      dynamicData.datesSelectedArray[dynamicData.datesSelectedArray.length-1].forEach((daySelected) => {
+        write(daySelected);
       });
   
       // contains a time duration choice
@@ -148,7 +150,7 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
     timePickerContainer.appendChild(container);
   
     const timeForContext = { [contextText]: {} };
-  
+
     selection.push(timeForContext);
   
     // Make label
@@ -180,7 +182,6 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
   
     // {"Start":{"hh":"00"}},{"Start":{"mm":"00"}}
     timeForContext[contextText][type] = placeholder.value;
-    // {[type]: placeholder.value}
     dropDown.appendChild(placeholder);
   
     let i = 0;
@@ -198,8 +199,15 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
   
     dropDown.addEventListener('change', (selected) => {
       timeForContext[contextText][type] = dropDown.value;
+      writeToDynamicData();
       writeToDateDiv();
       emitTimeSelectedEvent();
+    });
+  }
+
+  function writeToDynamicData () {
+    dynamicData.datesSelectedArrayObjects[dynamicData.datesSelectedArrayObjects.length-1].forEach((daySelected) => {
+      daySelected.times = JSON.parse(JSON.stringify(selection));
     });
   }
   

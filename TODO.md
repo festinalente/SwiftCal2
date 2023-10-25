@@ -5,6 +5,8 @@
 
 The ability to select a specific time (e.g. to schedule an appointment)
 
+## et rule where end date must be after start date
+
 ## Universal time
 
 Calculate and save unversal time 

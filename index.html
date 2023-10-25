@@ -19,9 +19,18 @@
       display: block;
     }
 
+    .attentionDiv, .demo {
+      background-color: #338;
+      color: #fff;
+      border-style: solid;
+      border-radius: 1em;
+      padding: 0.5em;
+      margin: 1em auto;
+    }
+
     h1, h2, h3, h4, p {
       font-family: Ubuntu, Arial, Helvetica, sans-serif;
-      margin: auto;
+      margin: 1em auto;
     }
 
     h1 {
@@ -50,87 +59,117 @@
       width: 90%;
     }
 
-    body {
-      max-width: 100%;
-    }
   </style>
 </head>
 <body>
   <h1>SwiftCal - A Calendar and Time Picker Web Component</h1>
+  
   <div class="eg"></div>
-  <h2>Idiosyncrasies</h2>
-  <ul>
-    <li>Dates are all stored in the form "YYYY-MM-DD"</li>
-    <li>Doesn't deal with universal time: Times are dependent on a real world context and therefore timezone (this will be added later)</li>
-    <li>Times are stored as "HH:MM"</li>
-  </ul>
-  <h2>Usage</h2>
-  <h3>Loading the component</h3>
-  <p>Load the ./clientSideJS/calendar.js in your page passing the defer option,</p>
-  <div class="code">
-    &lt;script defer src=&quot;./clientSideJS/calendar.js&quot;&gt;&lt;/script&gt;
-  </div>
-  <h3>Retrieving data</h3>
-  <p>Data a client has added is retrieved directly from the WebComponent: </p>
-  <div class="code">document.querySelector('.calendar-container').dynamicData()</div>
-  
-  <h3>Events</h3>
-  <p>You can listen for an event that is fired every time a selection is made, there are two custom events:</p>
-  <ol><li>timeSelect - fired when a time is selected</li><li>dateSelect - fired when a date is selected</li></ol>
-  
-  <h3>Developing and customising</h3>
-  <p>To customize the calendar: 
-    <ol>
-      <li>git clone https://github.com/festinalente/SwiftCal2.git</li>
-      <li>cd to the folder SwiftCal2 and run "npm install"</li>
-      <li>then run "grunt watch</li>
-    </ol>
-  <p>To change appearance without breaking anything, the best thing to do is to alter the variables in variables.scss</p>
+  <h2><a href="#examples">View more examples</a></h2>
 
-  <h3>Instantiation from HTML</h3>
-  <p>The calendar can be used as a web component by simply adding an element to the page</p>
-  <div class="code">&lt;swift-cal&gt;&lt;/swift-cal&gt;</div>
-  <h4>Options passed in data attributes using dash case</h4>
-  <p>Various options can be passed to the calendar as data parameters. These parameters are string representations
-    of primitives e.g. int, boolean, string etc.</p>
-  </p>
-  <ul>
-    <li><span class="code">data-number-of-months-to-display='12' - The number of months the calendar displays (whole number) </span></li>
-    <li><span class="code">data-display-time-chooser-modal='true' - Toggle time chooser on date select (Boolean)</span></li>
-    <li><span class="code">data-single-date-choice='true' - Limit date choice to a single day (Boolean)</span></li>
-    <li><span class="code">data-language='enGb' - Set language: 'enGb' and 'ptPt' available now</span></li>
-    <li><span class="code">data-selected-multiple='true' - Allow multiple dates to be selected (Boolean)</span></li>
-    <li><span class="code">data-preloaded-dates='["2023-10-30","2023-10-31","2023-11-01"]'- Allows dates to be added to the calendar
-      and selection limited to those dates</span></li>
-    <li><span class="code">data-preloaded-tooltip - Sets a title attribute on each preloaded date</span></li>
-  </ul>
-  <h3>Instantiation via JavaScript</h3>
-  <p>The calendar can be instantiated via JavaScript and parameters passed in an object. The big difference is the requirement to pass
-    a parent element to the calendar.</p>
-  </p>
-  <h4>Options passed via an object to the generateCalendar() function using camel case -these are otherwise the same as the options passed to in html data attributes:</h4>
-  <ul>
-    <li>parentDiv: <em>HTML querySelector</em> // a valid querySelector, </li>
-    <li>numberOfMonthsToDisplay: <em>int</em> // any whole number,</li>
-    <li>displayTimeChooserModal: <em>boolean</em> // true or false,</li>
-    <li>singleDateChoice:<em>boolean</em> // true or false,</li>
-    <li>language: <em>string</em> // 'enGb' and 'ptPt' available now,</li>
-    <li>selectedMultiple: <em>boolean</em> // true or false,</li>
-    <li>preloadedDates: <em>array of string</em> // ["2023-10-30","2023-10-31","2023-11-01"],</li>
-    <li>preloadedTooltip: <em>string</em> // text to display on a preloaded date on hover,</li>
-  </ul>
-  <h4>Example code: </h4>
-  <div class="code">
-    const cal = new calendar.SwiftCal();
-    cal.generateCalendar({ 
-      parentDiv: '.eg', 
-      numberOfMonthsToDisplay: 3,
-      displayTimeChooserModal: false
-    });
+  <div class="attentionDiv">
+    <h2>Idiosyncrasies</h2>
+    <ul>
+      <li>Dates are all stored in the form "YYYY-MM-DD"</li>
+      <li>Doesn't deal with universal time: Times are dependent on a real world context and therefore timezone (this will be added later)</li>
+      <li>Times are stored as "HH:MM" it's prepared to accept second input, this is not enabled.</li>
+      <li>The calendar uses an observable object called "dynamicData" to store the selected dates and emit events meaninf
+        it is interactive (see examples bellow)
+      </li>
+      <li>Dates relate to dates from the current moment. An option will be added to allow passed dates.</li>
+    </ul>
   </div>
-  <div class="eg"></div>
-  <h2>Examples</h2>
+
+  <div class="attentionDiv">
+    <h2>Usage</h2>
+    <h3>Loading the component</h3>
+    <p>Load the ./clientSideJS/calendar.js in your page passing the <b>defer</b> attribute,</p>
+    <div class="code">
+      &lt;script defer src=&quot;./clientSideJS/calendar.js&quot;&gt;&lt;/script&gt;
+    </div>
+    <p>Then add a tag to your markup where you want the calendar,</p>
+    <div class="code">&lt;swift-cal&gt;&lt;/swift-cal&gt;</div>
+    <p>Options are passed as data-attributes. The example bellow sets the calendar to display 12 months into the future:</p>
+    <div class="code">&lt;swift-cal data-number-of-months-to-display='12'&gt;&lt;/swift-cal&gt;</div>
+    <h3>Retrieving data</h3>
+    <p>Data is retrieved directly from the WebComponent, you can access it with a querySelector. The function dynamicData() returns the data:</p>
+    <div class="code">document.querySelector('.calendar-container').dynamicData()</div>
+  </div>
+
+  <div class="attentionDiv">
+    <h3>Custom Events</h3>
+    <p>You can listen for an event that is fired every time a selection is made, there are two custom events:</p>
+    <ol><li>timeSelect - fired when a time is selected</li><li>dateSelect - fired when a date is selected</li></ol>
+  </div>
+
+  <div class="attentionDiv">
+    <h3>Developing and customising</h3>
+    <p>To customize the calendar, follow these steps:</p>
+      <ol>
+        <li>git clone https://github.com/festinalente/SwiftCal2.git</li>
+        <li>cd to the folder SwiftCal2 and run "npm install"</li>
+        <li>then run "grunt watch</li>
+      </ol>
+      <p>Now any changes you make will be written to and compiled (making the code backward compatible) automatically.</p>
+    <p>To simply change appearance without breaking anything, the best thing to do is to alter the variables in variables.scss</p>
+  </div>
+
+  <div class="attentionDiv">
+    <h2>Instantiation and Options</h2>
+    <h3>Instantiation via HTML</h3>
+    <p>The calendar can be used as a web component by simply adding an element to the page</p>
+    <div class="code">&lt;swift-cal&gt;&lt;/swift-cal&gt;</div>
+    <h4>Options passed in data attributes using dash case</h4>
+    <p>Various options can be passed to the calendar as data parameters. These parameters are string representations
+      of primitives e.g. int, boolean, string etc.</p>
+    </p>
+    <ul>
+      <li><span class="code">data-number-of-months-to-display='12' - The number of months the calendar displays (whole number) </span></li>
+      <li><span class="code">data-display-time-chooser-modal='true' - Toggle time chooser on date select (Boolean)</span></li>
+      <li><span class="code">data-single-date-choice='true' - Limit date choice to a single day (Boolean)</span></li>
+      <li><span class="code">data-language='enGb' - Set language: 'enGb' and 'ptPt' available now</span></li>
+      <li><span class="code">data-selected-multiple='true' - Allow multiple dates to be selected (Boolean)</span></li>
+      <li><span class="code">data-preloaded-dates='["2023-10-30","2023-10-31","2023-11-01"]'- Allows dates to be added to the calendar
+        and selection limited to those dates</span></li>
+      <li><span class="code">data-preloaded-tooltip - Sets a title attribute on each preloaded date</span></li>
+    </ul>
+
+    <h3>Instantiation via JavaScript</h3>
+    <p>The calendar can be instantiated via JavaScript and parameters passed in an object. The big difference is the requirement to pass
+      a parent element to the calendar.</p>
+    
+      <h4>Example code used to instantiate the first calendar at the top of this page: </h4>
+      <div class="code">
+        const cal = new calendar.SwiftCal();
+        cal.generateCalendar({ 
+          parentDiv: '.eg', 
+          numberOfMonthsToDisplay: 3,
+          displayTimeChooserModal: false
+        });
+      </div>
+
+    <h4>Options passed via an object to the generateCalendar() function using camel case -these are otherwise the same as the options passed to in html data attributes:</h4>
+    <ul>
+      <li>parentDiv: <em>HTML querySelector</em> // a valid querySelector, </li>
+      <li>numberOfMonthsToDisplay: <em>int</em> // any whole number,</li>
+      <li>displayTimeChooserModal: <em>boolean</em> // true or false,</li>
+      <li>singleDateChoice:<em>boolean</em> // true or false,</li>
+      <li>language: <em>string</em> // 'enGb' and 'ptPt' available now,</li>
+      <li>selectedMultiple: <em>boolean</em> // true or false,</li>
+      <li>preloadedDates: <em>array of string</em> // ["2023-10-30","2023-10-31","2023-11-01"],</li>
+      <li>preloadedTooltip: <em>string</em> // text to display on a preloaded date on hover,</li>
+    </ul>
+  </div>
+  
+  <h2 id="examples" style="margin-left: auto; margin-right: auto; text-align: center;">Examples:</h2>
   <div class="demos"></div>
+
+  <div class="attentionDiv" style="background-color:#fff">
+    <a href="mailto:tomas@appyou.pro">Have a feature request, improvement suggestion or a job for me? Mail me.</a>
+    <br>
+    <a href="https://github.com/festinalente/SwiftCal2/issues">Bugs can be files under issues on GitHub.</a>  
+  </div>
+
 </body>
 
 <script>
@@ -171,7 +210,7 @@
 
   const demoData = [
     {
-      title: `Bellow is a calendar rendering default values and settings`,
+      title: `Bellow is a calendar rendering default values and settings:`,
       html: `<swift-cal></swift-cal>`
     },
     {
@@ -184,7 +223,7 @@
             </swift-cal>`
     },
     {
-    title: 'Bellow is a calendar in Portuguese, with three months allowing a single date to be selected',
+    title: 'Bellow is a calendar in Portuguese, with three months, allowing a single date to be selected:',
     html: `<swift-cal 
             data-number-of-months-to-display="3" 
             data-language="ptPt" 
@@ -193,15 +232,15 @@
     },
     {
       title: `Bellow is a calendar in English that allows multiple date ranges to be selected and times added
-    for each date in the range:`,
+    for each date in the range. Single dates can be added as a range by triple clicking on a date:`,
       html: `<swift-cal data-display-time-chooser-modal="true"></swift-cal>`
     },
     {
-      titte: `Bellow is a calendar in Portuguese, with two months, allowing multiple date range selections`,
+      title: `Bellow is a calendar in Portuguese, with two months, allowing multiple date range selections, but not time:`,
       html: `<swift-cal data-number-of-months-to-display="2" data-language="ptPt"></swift-cal>`
     },
     {
-      title: `Bellow is a calendar in English, with three months allowing a single date to be selected that also toggles a time picker`,
+      title: `Bellow is a calendar in English, with three months allowing a single date to be selected that also toggles a time picker:`,
       html: `<swift-cal 
               data-number-of-months-to-display="3" 
               data-language="enGb" 
@@ -213,34 +252,39 @@
 
   function generateView (demoData) {
     const parent = document.querySelector('.demos');
+
+    const demoContainer = document.createElement('div');
+    demoContainer.classList.add('demo');
+    parent.appendChild(demoContainer);
+
     const title = document.createElement('h3');
     title.textContent = demoData.title;
-    parent.appendChild(title);
+    demoContainer.appendChild(title);
     
     const markup = document.createElement('h4');
     markup.textContent = "The html:";
-    parent.appendChild(markup);
+    demoContainer.appendChild(markup);
 
     const htmlExample = document.createElement('div');
     htmlExample.classList.add('code');
     htmlExample.textContent = demoData.html
-    parent.appendChild(htmlExample);
+    demoContainer.appendChild(htmlExample);
 
     const result = document.createElement('h4');
     result.textContent = "The result:";
-    parent.appendChild(result);
+    demoContainer.appendChild(result);
 
     const example = document.createElement('div');
     example.innerHTML = demoData.html;
-    parent.appendChild(example);
+    demoContainer.appendChild(example);
 
     const selectData = document.createElement('h4');
     selectData.textContent = "Select dates to see stored data:";
-    parent.appendChild(selectData);
+    demoContainer.appendChild(selectData);
 
     const userData = document.createElement('div');
     userData.classList.add('code');
-    parent.appendChild(userData);
+    demoContainer.appendChild(userData);
 
     example.querySelector('swift-cal').addEventListener(
       'dateSelect',

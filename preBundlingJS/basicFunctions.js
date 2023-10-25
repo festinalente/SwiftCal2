@@ -95,7 +95,11 @@ function clearSelection (calendar, dynamicData) {
   for (let i = 0; i < datesObjStore.length; i++) {
     for (let j = 0; j < datesIndex.length; j++) {
       datesIndex[j].forEach((date) => {
-        unselectedStyle(calendar.querySelector(`[data-humandate='${date}']`));
+        const dateDiv = calendar.querySelector(`[data-humandate='${date}']`);
+        unselectedStyle(dateDiv);
+        while (dateDiv.children.length > 0) {
+          dateDiv.removeChild(dateDiv.lastChild);
+        }
         if (i === datesObjStore.length - 1 && j === datesIndex.length - 1) {
           datesObjStore.length = 0;
           datesIndex.length = 0;
