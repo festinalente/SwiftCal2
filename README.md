@@ -1,6 +1,6 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/tomasMetcalfe/swiftcal2)
 # SwiftCal2
-SwiftCal2 is a calendar, date picker and time picker for real world locations, i.e. times are context dependent (e.g. the location of a shop) rather than universal (e.g. via a timestamp) although this improvement is planned. It allows multiple ranges and times to be selected and preselected.
+SwiftCal2 is a calendar, date picker and time picker. It allows multiple ranges and times to be selected and preselected.
 
 <!--
 ```
