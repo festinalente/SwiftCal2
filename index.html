@@ -63,16 +63,13 @@
 </head>
 <body>
   <h1>SwiftCal - A Calendar and Time Picker Web Component</h1>
-  
   <div class="eg"></div>
+  <h2><a href=" https://github.com/festinalente/SwiftCal2/">GitHub repo</a></h2>
   <h2><a href="#examples">View more examples</a></h2>
 
   <div class="attentionDiv">
     <h2>Idiosyncrasies</h2>
     <ul>
-      <li>Dates are all stored in the form "YYYY-MM-DD"</li>
-      <li>Doesn't deal with universal time: Times are dependent on a real world context and therefore timezone (this will be added later)</li>
-      <li>Times are stored as "HH:MM" it's prepared to accept second input, this is not enabled.</li>
       <li>The calendar uses an observable object called "dynamicData" to store the selected dates and emit events meaninf
         it is interactive (see examples bellow)
       </li>
@@ -97,9 +94,23 @@
   </div>
 
   <div class="attentionDiv">
+    <h2>The dynamicData object</h2>
+    <p>Data from the calendar is stored in an object called "dynamicData". This object can be accessed directly from the WebComponent 
+      with the calendar.dynamicData().</p>
+    <p>The example below shows the form the data takes:</p>  
+    <pre class="code dataexample">
+
+    </pre>
+     
+  </div>
+
+  <div class="attentionDiv">
     <h3>Custom Events</h3>
     <p>You can listen for an event that is fired every time a selection is made, there are two custom events:</p>
     <ol><li>timeSelect - fired when a time is selected</li><li>dateSelect - fired when a date is selected</li></ol>
+    <p>You can listen for these as you would with a normal event:</p>
+    <div class="code">calendar.addEventListener('timeSelect', function () { ... });</div>
+
   </div>
 
   <div class="attentionDiv">
@@ -111,7 +122,11 @@
         <li>then run "grunt watch</li>
       </ol>
       <p>Now any changes you make will be written to and compiled (making the code backward compatible) automatically.</p>
-    <p>To simply change appearance without breaking anything, the best thing to do is to alter the variables in variables.scss</p>
+    <h4>Appearance</h4>  
+    <p>To simply change appearance without breaking anything, the best thing to do is to alter the variables in variables.scss.</p>
+    <p>If you are a designer however and can make it look better, consider submitting a pull request.</p>
+    <h4>Language and text</h4>
+    <p>The easiest way to change language and or text is to edit the values in <em>./preBundlingJS/languages.js</em></p>  
   </div>
 
   <div class="attentionDiv">
@@ -173,7 +188,56 @@
 </body>
 
 <script>
+  const example = `{
+  <b>datesSelectedArray is mostly used for tracking internally. 
+  The outer array is all the dates selected (one or more ranges).
+  The inner array is specific ranges of succesive dates.</b>
+  "datesSelectedArray": [
+    [
+      "2023-11-08"
+    ]
+  ],
+  "datesSelectedArrayObjects": [
+    [
+      { 
+        <b>day -the day of the month</b>
+        "day": "8",
+        <b>'humandate' -a YYYY-MM-DD date for end user use</b>
+        "humandate": "2023-11-08",
+        <b>index -used internally, start on day 1 of those displayed</b>
+        "index": "38",
+        <b>UTC - UTC date string for a date</b>
+        "UTC": 1699401600000,
+        <b>Times are stored as objects with a name (start, end) 
+        and values for hour and minute</b>
+        
+        "times": [
+          {
+            "Start": {
+              "hh": "09",
+              "mm": "00"
+            },
+            <b>UTC Date/time string is added for specific time</b>
+            "UTC": 1699434000000
+          },
+          {
+            "End": {
+              "hh": "13",
+              "mm": "00"
+            },
+            "UTC": 1699448400000
+          }
+        ]
+      }
+    ]
+  ],
+  <b>disabled -boolean to disable the calendar -not implemented, might be removed.</b>
+  "disabled": false
+}`;
 
+
+  document.querySelector('.dataexample').innerHTML = example;
+  
   window.setTimeout(()=> {
     const cal = new calendar.SwiftCal();
     cal.generateCalendar({ 

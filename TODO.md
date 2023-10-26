@@ -1,15 +1,8 @@
-
-## Convert and save timestamps with dates.  
-
 ## Specific blocks of time
 
 The ability to select a specific time (e.g. to schedule an appointment)
 
-## et rule where end date must be after start date
-
-## Universal time
-
-Calculate and save unversal time 
+## set rule where end date must be after start date
 
 ## Select or block by day of week
 Wehere an index number is passed corresponding to the days of the week to which
