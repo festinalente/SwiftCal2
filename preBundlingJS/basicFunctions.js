@@ -14,6 +14,13 @@ import { displayTimeChooserModal, getSelectedTimes } from './displayTimeChooserM
 	};
 
 
+  function humandateToUTC (humandate) {
+    let ints = humandate.split('-');
+    ints = ints.map((int) => parseInt(int));
+    ints[1] = ints[1] - 1;
+    return Date.UTC(ints[0], ints[1], ints[2]);
+  }
+
 /**
  * Calculates the time value in milliseconds based on the given time.
  *

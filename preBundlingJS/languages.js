@@ -28,8 +28,8 @@ const ptPt = {
     textAfter: ''
   },
   timeWidget: {
-    addTime: 'Adicione duração:',
-    start: 'Início',
+    addTime: `Adicione duração:`,
+    start:`Início`,
     end: 'Fim'
   }
 

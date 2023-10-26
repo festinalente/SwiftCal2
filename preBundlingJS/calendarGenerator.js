@@ -547,7 +547,7 @@ function SwiftCal () {
 
 
   
-  const dateObjectTemplate = { day: 'day', humandate: 'YYYY-MM-DD', index: '0'};
+  const dateObjectTemplate = { day: 'day', humandate: 'YYYY-MM-DD', index: '0', UTC: 1698278400000};
   /**
    * Creates a standard date object with the given date.
    *
@@ -559,12 +559,15 @@ function SwiftCal () {
     obj.day = date.dataset.day;
     obj.humandate =  date.dataset.humandate;
     obj.index = date.dataset.dayindex;
+    obj.UTC = humandateToUTC(date.dataset.humandate);
     return obj;
   }
-
-
-
-
+  function humandateToUTC (humandate) {
+    let ints = humandate.split('-');
+    ints = ints.map((int) => parseInt(int));
+    ints[1] = ints[1] - 1;
+    return Date.UTC(ints[0], ints[1], ints[2]);
+  }
 }
 
 export { SwiftCal };

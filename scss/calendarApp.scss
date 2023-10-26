@@ -52,7 +52,7 @@
 
   .timeCont {
     margin-left: auto;
-    width: 10em;
+    width: 20em;
     background-color: aliceblue;
     border-style: solid;
     border-color: #f15925;
@@ -135,7 +135,6 @@
   }
 
   .timeChooser {
-    width: 10em;
     position: static;
     background-color: aliceblue;
     margin-left: auto;
@@ -143,6 +142,12 @@
   }
 
   .timeContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .timeContainer div {
     display: flex;
   }
 
@@ -170,11 +175,9 @@
 
   .deleteDiv {
     font-family: Ubuntu;
-    font-size: 1.61em;
     background-color: #337ab7;
     color: #ffcc33;
     border-bottom-style: solid;
-    height: 2em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -187,13 +190,15 @@
     font-weight: 700;
     font-family: Arial,Helvetica,sans-serif;
     border-style: solid;
-    border-radius: 1em;
+    border-radius: 2em;
     text-align: center;
-    height: 30px;
-    width: 30px;
+    height: 2em;
+    width: 2em;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 0.5em;
+    font-size: 1.5em;
   }
 
   .innerSpanDeleteBtn {

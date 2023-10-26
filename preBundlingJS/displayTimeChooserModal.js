@@ -133,7 +133,7 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
   }
 
   function makeButton (parent, className, textContent, hoverText, action, fn) {
-    const button = document.createElement('button');
+    const button = document.createElement('div');
     button.classList.add(className);
     button.textContent = textContent;
     button.addEventListener(action, (e) => {
@@ -207,8 +207,26 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
 
   function writeToDynamicData () {
     dynamicData.datesSelectedArrayObjects[dynamicData.datesSelectedArrayObjects.length-1].forEach((daySelected) => {
-      daySelected.times = JSON.parse(JSON.stringify(selection));
+      const times = JSON.parse(JSON.stringify(selection));
+      daySelected.times = times;
+      const names = Object.keys(times);
+      Object.values(times).forEach((time, i) => {
+        let val = Object.values(time);
+        let hhmmss = Object.values(val[0]);
+        daySelected.times[names[i]].UTC = humandateToUTC(daySelected.humandate, hhmmss);
+      })
     });
+  }
+
+  function humandateToUTC (humandate, time) {
+    const hh = (time[0]) ? time[0] : 0;
+    const mm = (time[1]) ? time[1] : 0;
+    const ss = (time[2]) ? time[2] : 0;
+
+    let ints = humandate.split('-');
+    ints = ints.map((int) => parseInt(int));
+    ints[1] = ints[1] - 1;
+    return Date.UTC(ints[0], ints[1], ints[2], hh, mm, ss);
   }
   
   function removeTimeValuesOnDate () {

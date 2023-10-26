@@ -247,6 +247,15 @@
               data-single-date-choice="true"
               data-display-time-chooser-modal="true">
             </swift-cal>`
+    },
+    {
+      title: `Bellow is a calendar in Portuguese, with two months, allowing a single date to be selected that also toggles a time picker:`,
+      html: `<swift-cal 
+              data-number-of-months-to-display="2" 
+              data-language="ptPt" 
+              data-single-date-choice="true"
+              data-display-time-chooser-modal="true">
+            </swift-cal>`
     }
   ];
 
@@ -279,7 +288,7 @@
     demoContainer.appendChild(example);
 
     const selectData = document.createElement('h4');
-    selectData.textContent = "Select dates to see stored data:";
+    selectData.textContent = "Select dates/times. Stored data is shown bellow and can be fetched via the 'calendar.dynamicData()' method: ";
     demoContainer.appendChild(selectData);
 
     const userData = document.createElement('div');
