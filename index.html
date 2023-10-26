@@ -81,9 +81,13 @@
     <h2>Usage</h2>
     <h3>Loading the component</h3>
     <p>Load the ./clientSideJS/calendar.js in your page passing the <b>defer</b> attribute,</p>
-    <div class="code">
-      &lt;script defer src=&quot;./clientSideJS/calendar.js&quot;&gt;&lt;/script&gt;
-    </div>
+    <pre class="code">
+&lt;script defer src=&quot;./clientSideJS/calendar.js&quot;&gt;&lt;/script&gt;
+
+<b>Or from a CDN:</b>
+
+&lt;script defer src=&quot;https://cdn.jsdelivr.net/gh/festinalente/SwiftCal2/clientSideJS/calendar.js&quot;&gt;&lt;/script&gt;
+    </pre>
     <p>Then add a tag to your markup where you want the calendar,</p>
     <div class="code">&lt;swift-cal&gt;&lt;/swift-cal&gt;</div>
     <p>Options are passed as data-attributes. The example bellow sets the calendar to display 12 months into the future:</p>
