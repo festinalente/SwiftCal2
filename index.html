@@ -17,6 +17,15 @@
       width: fit-content;
       padding: 1em;
       display: block;
+      width: auto;
+      overflow-wrap: normal;
+      white-space: break-spaces;
+      word-break: break-word;
+    }
+
+    .code b {
+      overflow-wrap: normal;
+      white-space: pre-wrap;
     }
 
     .attentionDiv, .demo {
@@ -26,9 +35,10 @@
       border-radius: 1em;
       padding: 0.5em;
       margin: 1em auto;
+      width: 100%; 
     }
 
-    h1, h2, h3, h4, p {
+    h1, h2, h3, h4, p, a {
       font-family: Ubuntu, Arial, Helvetica, sans-serif;
       margin: 1em auto;
     }
@@ -53,6 +63,22 @@
       font-size: 20;
     }
 
+    a {
+      background-color: #ffffffe6;
+      padding: 0.5em;
+      border-style: solid;
+      border-color: #338;
+      border-radius: 0.5em;
+    }
+
+    li a {
+      background-color: #ffffff;
+      padding: 0.4em;
+      border-style: none;
+      line-height: 2em;
+      font-size: 1.2em;
+    }
+
     body {
       background-color: #000;
       color: #fff;
@@ -63,22 +89,28 @@
 </head>
 <body>
   <h1>SwiftCal - A Calendar and Time Picker Web Component</h1>
-  <div class="eg"></div>
+  
   <h2><a href=" https://github.com/festinalente/SwiftCal2/">GitHub repo</a></h2>
   <h2><a href="#examples">View more examples</a></h2>
+  <h2><a href="https://www.npmjs.com/package/swiftcal2">View on NPM</a></h2>
+
+  <div class="eg"></div>
 
   <div class="attentionDiv">
-    <h2>Idiosyncrasies</h2>
+    <h2>Index:</h2>
     <ul>
-      <li>The calendar uses an observable object called "dynamicData" to store the selected dates and emit events meaninf
-        it is interactive (see examples bellow)
-      </li>
-      <li>Dates relate to dates from the current moment. An option will be added to allow passed dates.</li>
+      <li><a href="#todo">How to use</a></li>
+      <li><a href="#data">The dynamicData object</a></li>
+      <li><a href="#events">Custom events emitted</a></li>
+      <li><a href="#customizing">How to customize</a></li>
+      <li><a href="#instantiation">Two ways to instantiate</a></li>
+      <li><a href="#examples">Examples</a></li>    
+      <li><a href="#usage">Future features planned</a></li>
     </ul>
   </div>
 
   <div class="attentionDiv">
-    <h2>Usage</h2>
+    <h2 id="usage">Usage</h2>
     <h3>Loading the component</h3>
     <p>Load the ./clientSideJS/calendar.js in your page passing the <b>defer</b> attribute,</p>
     <pre class="code">
@@ -98,7 +130,7 @@
   </div>
 
   <div class="attentionDiv">
-    <h2>The dynamicData object</h2>
+    <h2 id="data">The dynamicData object</h2>
     <p>Data from the calendar is stored in an object called "dynamicData". This object can be accessed directly from the WebComponent 
       with the calendar.dynamicData().</p>
     <p>The example below shows the form the data takes:</p>  
@@ -109,7 +141,7 @@
   </div>
 
   <div class="attentionDiv">
-    <h3>Custom Events</h3>
+    <h2 id="events">Custom Events</h2>
     <p>You can listen for an event that is fired every time a selection is made, there are two custom events:</p>
     <ol><li>timeSelect - fired when a time is selected</li><li>dateSelect - fired when a date is selected</li></ol>
     <p>You can listen for these as you would with a normal event:</p>
@@ -118,7 +150,7 @@
   </div>
 
   <div class="attentionDiv">
-    <h3>Developing and customising</h3>
+    <h2 id="customizing">Developing and customising</h2>
     <p>To customize the calendar, follow these steps:</p>
       <ol>
         <li>git clone https://github.com/festinalente/SwiftCal2.git</li>
@@ -134,7 +166,7 @@
   </div>
 
   <div class="attentionDiv">
-    <h2>Instantiation and Options</h2>
+    <h2 id="instantiation">Instantiation and Options</h2>
     <h3>Instantiation via HTML</h3>
     <p>The calendar can be used as a web component by simply adding an element to the page</p>
     <div class="code">&lt;swift-cal&gt;&lt;/swift-cal&gt;</div>
@@ -183,6 +215,18 @@
   <h2 id="examples" style="margin-left: auto; margin-right: auto; text-align: center;">Examples:</h2>
   <div class="demos"></div>
 
+  <div class="attentionDiv">
+    <h2 id="todo">TODO</h2>
+    <ul>
+      <li>A method to pick predefined times. (e.g. to schedule an appointment),</li>
+      <li>An option to disallow selecting end times that are before start times,</li>
+      <li>Ability to set the calendar for passed dates,</li>
+      <li>Ability to add notes or information to a day and to specific time blocks,</li>
+      <li>Ability to apply rules to day in every week (e.g. block all Sundays),</li>
+      <li>Write tests.</li>
+    </ul>
+  </div>
+
   <div class="attentionDiv" style="background-color:#fff">
     <a href="mailto:tomas@appyou.pro">Have a feature request, improvement suggestion or a job for me? Mail me.</a>
     <br>
@@ -193,9 +237,11 @@
 
 <script>
   const example = `{
-  <b>datesSelectedArray is mostly used for tracking internally. 
-  The outer array is all the dates selected (one or more ranges).
-  The inner array is specific ranges of succesive dates.</b>
+
+<b>datesSelectedArray is mostly used for tracking internally.
+The outer array is all the dates selected (one or more ranges).
+The inner array is specific ranges of succesive dates.</b>
+
   "datesSelectedArray": [
     [
       "2023-11-08"
@@ -203,25 +249,27 @@
   ],
   "datesSelectedArrayObjects": [
     [
+<b>
+  <ul>
+    <li>day -the day of the month</li>
+    <li>'humandate' -a YYYY-MM-DD date for end user use</li>
+    <li>index -used internally, start on day 1 of those displayed</li>
+    <li>UTC - UTC date string for a date</li>
+    <li>Times are stored as objects with a name (start, end)and values for hour and minute</li>
+    <li>UTC Date/time string is added for specific time</li>
+  </ul>
+</b>
       { 
-        <b>day -the day of the month</b>
         "day": "8",
-        <b>'humandate' -a YYYY-MM-DD date for end user use</b>
         "humandate": "2023-11-08",
-        <b>index -used internally, start on day 1 of those displayed</b>
         "index": "38",
-        <b>UTC - UTC date string for a date</b>
         "UTC": 1699401600000,
-        <b>Times are stored as objects with a name (start, end) 
-        and values for hour and minute</b>
-        
         "times": [
           {
             "Start": {
               "hh": "09",
               "mm": "00"
             },
-            <b>UTC Date/time string is added for specific time</b>
             "UTC": 1699434000000
           },
           {
@@ -235,7 +283,8 @@
       }
     ]
   ],
-  <b>disabled -boolean to disable the calendar -not implemented, might be removed.</b>
+
+<b>disabled -boolean to disable the calendar -not implemented, might be removed.</b>
   "disabled": false
 }`;
 
