@@ -46,7 +46,7 @@
 }
 .calendar .timeCont {
   margin-left: auto;
-  width: 20em;
+  max-width: 20em;
   background-color: aliceblue;
   border-style: solid;
   border-color: #f15925;
