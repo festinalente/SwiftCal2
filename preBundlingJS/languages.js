@@ -1,3 +1,5 @@
+/*eslint quotes: ["error", "backtick"]*/
+// Bacticks are enforcedf in this file so that special characters are correctly rendered.
 /* Language defaults */
 const enGb = {
   generalTime: {
@@ -5,6 +7,7 @@ const enGb = {
     daysInFull: [`Sunday`, `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`],
     daysTruncated: [`Sun`, `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`]
   },
+  pluralism: `s`,
   formatDayText: {
     textBefore: `Set these times for all`,
     textAfter: ``
@@ -23,8 +26,9 @@ const ptPt = {
     daysInFull: [`Domingo`, `Segunda-Feira`, `Terça-Feira`, `Quarta-Feira`, `Quinta-Feira`, `Sexta-Feira`, `Sábado`],
     daysTruncated: [`Dom`, `Seg`, `Ter`, `Qua`, `Qui`, `Sex`, `Sab`]
   },
+  pluralism: `s`,
   formatDayText: {
-    textBefore: `Applique estas horas a todos`,
+    textBefore: `Applique estas horas a`,
     textAfter: ``
   },
   timeWidget: {

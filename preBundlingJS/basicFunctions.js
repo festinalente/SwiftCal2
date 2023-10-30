@@ -1,25 +1,50 @@
-import { selectedStyle, unselectedStyle } from './styles.js';
-import { config, calendar, lastDateClicked } from './calendarGenerator.js';
-import { displayTimeChooserModal, getSelectedTimes } from './displayTimeChooserModal.js';
+import { unselectedStyle } from './styles.js';
 
+/**
+ * Adds 1 to the month in a given date to make it more human-readable.
+ * @param {string} date - The date in the format 'YYYY-MM-DD' or 'YYYY-M-D'.
+ * @returns {string} - The modified date in the format 'YYYY-MM-DD'.
+ * @throws {Error} - If the date parameter is not in the format 'YYYY-MM-DD' or 'YYYY-M-D'.
+ */
+function humanDate (date) {
+  const dateParts = date.split('-');
+  const month = parseInt(dateParts[1]) + 1;
+  const day = parseInt(dateParts[2]);
+  const modifiedMonth = month < 10 ? `0${month}` : month;
+  const modifiedDay = day < 10 ? `0${day}` : day;
+  const modifiedDate = `${dateParts[0]}-${modifiedMonth}-${modifiedDay}`;
+  return modifiedDate;
+}
 
-	// utility to return date in correct format
-	function formatDate (d) {
-		const date = (d) ? new Date(d) : new Date();
-		const day = date.getDate();
-		const month = (date.getMonth() + 1);
-		const year = date.getFullYear();
-		const formated = `${year}-${month}-${day}`;
-		return formated;
-	};
+/**
+ * Converts a human date string to UTC timestamp.
+ *
+ * @param {string} humandate - The human-readable date string in the format "YYYY-MM-DD".
+ * @return {number} - The UTC timestamp in milliseconds.
+ */
+function humandateToUTC (humandate) {
+  let ints = humandate.split('-');
+  ints = ints.map((int) => parseInt(int));
+  ints[1] = ints[1] - 1;
+  return Date.UTC(ints[0], ints[1], ints[2]);
+}
 
-
-  function humandateToUTC (humandate) {
-    let ints = humandate.split('-');
-    ints = ints.map((int) => parseInt(int));
-    ints[1] = ints[1] - 1;
-    return Date.UTC(ints[0], ints[1], ints[2]);
-  }
+// model object
+const dateObjectTemplate = { day: 'day', humandate: 'YYYY-MM-DD', index: '0', UTC: 1698278400000};
+/**
+ * Creates a standard date object with the given date.
+ *
+ * @param {any} date - Is a string YYYY-MM-DD months are counted from 0.
+ * @return {object} The standard date object with the given date.
+ */
+function standardDateObject (date) {
+  const obj = Object.create(dateObjectTemplate);
+  obj.day = date.dataset.day;
+  obj.humandate =  date.dataset.humandate;
+  obj.index = date.dataset.dayindex;
+  obj.UTC = humandateToUTC(date.dataset.humandate);
+  return obj;
+}
 
 /**
  * Calculates the time value in milliseconds based on the given time.
@@ -44,7 +69,7 @@ function timeValueInMill (time) {
 }
 
 /**
- * var getDaysInMonth - Get number of days in month
+ * etDaysInMonth - Get number of days in month
  *
  * @param  {!number} month The number of the corresponding month.
  * @param  {!number} year  The corresponding year.
@@ -55,45 +80,12 @@ function getDaysInMonth (month, year) {
 }
 
 /**
- * Checks for overlap in an array of values.
+ * Clears the selection in the calendar by removing the selected dates and 
+ * resetting the dynamic data.
  *
- * @param {Array} values - The array of values to check for overlap.
- * @return {boolean} - Returns true if overlap is found, false otherwise.
- */
-function checkOverlap (values) {
-  const numericalEquivalent = values.map(timeValueInMill);
-
-  for (let currentIndex = 2; currentIndex < numericalEquivalent.length; currentIndex += 2) {
-    const currentStart = numericalEquivalent[currentIndex];
-    const currentEnd = numericalEquivalent[currentIndex + 1];
-
-    for (let comparisonIndex = 0; comparisonIndex < numericalEquivalent.length; comparisonIndex += 2) {
-      if (currentIndex !== comparisonIndex) {
-        const comparisonStart = numericalEquivalent[comparisonIndex];
-        const comparisonEnd = numericalEquivalent[comparisonIndex + 1];
-
-        if (comparisonEnd >= currentStart && comparisonEnd <= currentEnd) {
-          return true;
-        } else if (currentStart >= comparisonStart && currentEnd <= comparisonEnd) {
-          return true;
-        } else if (currentStart === comparisonStart && currentEnd === comparisonEnd) {
-          return true;
-        } else if (currentEnd >= comparisonStart && currentEnd <= comparisonEnd) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-  }
-  return false;
-}
-
-/**
- * Clears the selection of dates in the calendar.
- *
- * @param {undefined}
- * @return {undefined}
+ * @param {Object} calendar - The calendar component.
+ * @param {Object} dynamicData - The dynamic data object.
+ * @return {undefined} This function does not return a value.
  */
 function clearSelection (calendar, dynamicData) {
   const datesObjStore = dynamicData.datesSelectedArrayObjects;
@@ -115,10 +107,6 @@ function clearSelection (calendar, dynamicData) {
     }
   }
 }
-
-/*
-
-*/
 
 /**
  * @param {number} [length=10] -length the desired length of the string of numbers.
@@ -153,6 +141,12 @@ function generateRandomString() {
 //WE WERE SETTING UP THE CALENDAR TO RENDER DATES IN THE PAST:
 /* Warning: Contemplates daylight saving time*/
 
+/**
+ * Calculates and returns the earliest date from a given array of preloaded dates.
+ *
+ * @param {Array} preloadedDates - An array of preloaded dates.
+ * @return {Date} The earliest date from the preloaded dates.
+ */
 function getEarliestDate (preloadedDates) {
   const order = [];
   for (let i = 0; i < preloadedDates.length; i++) {
@@ -169,74 +163,12 @@ function getEarliestDate (preloadedDates) {
 }
 
 /**
- * Converts an array of dates into a new array of objects with formatted dates.
+ * Generates a function comment for the given function body in a markdown
+ * code block with the correct language syntax.
  *
- * @param {Array} dates - The array of dates.
- * @return {Promise} A promise that resolves to the new array of objects.
+ * @param {HTMLElement} calendar - The calendar component.
+ * @param {Array} datesOpen - An array of open dates.
  */
-function convertDates (dates) {
-  const promise = new Promise((resolve, reject) => {
-    for (let i = 0; i < dates.length; i++) {
-      if (dates[i].day) {
-        dynamicData.datesSelectedArrayObjects.push(dates[i]);
-        continue;
-      }
-      // dynamicData.datesSelectedArrayObjects.push({ day: standardDateObject(dates[i]) });
-    }
-  });
-  return promise;
-}
-
-
-/**
- * Asynchronously preloads dates for the calendar.
- *
- * @param {object} calendar - the calendar object
- * @param {array} dates - an array of dates to preload
- * @return {void} 
- */
-async function preloadDates (calendar, dates) {
-  console.log('PRELOADING DATES...');
-  // console.log(calendar);
-  // console.log(dates);
-  dates = ['2023-10-10']
-  let endUser = 1;
-  //attach(dateNode);
-  await convertDates(dates);
-
-  for (let i = 0; i < datesSelectedArrayObjects.length; i++) {
-    const dateObject = datesSelectedArrayObjects[i];
-    const dateNode = calendar.querySelector(`#${dateObject.day}`);
-
-    if (dateNode) {
-      datesSelectedArray.push(dates[i].day);
-      dateNode.style.backgroundColor = '#fc3';
-      dateNode.classList.add('available');
-    }
-
-    if (endUser) {
-      attach(dateNode);
-      //timeChooser();
-    }
-
-    if (displayTimeChooserModal) {
-      // createTimeElements ();
-      //generateTimesOnly(dateObject.times, dateNode);
-    }
-
-    if (selectRange && dateNode && !dateNode.classList.contains('filler')) {
-      dateNode.style.backgroundColor = '#333';
-      dateNode.classList.add('blocked');
-      dateNode.title = 'No availability on this day';
-
-      const soldOut = document.createElement('p');
-      soldOut.classList.add('calendarTime');
-      soldOut.textContent = 'Sold out';
-      dateNode.appendChild(soldOut);
-    }
-  }
-}
-
 function blockDaysNotOpen (calendar, datesOpen) {
   if (calendar && datesOpen) {
     const allDays = Array.from(calendar.querySelectorAll('.dayTime')).map((el) => { return el.dataset.humandate; });
@@ -245,7 +177,7 @@ function blockDaysNotOpen (calendar, datesOpen) {
     for (let i = 0; i < allDays.length; i++) {
       if (openDays.indexOf(allDays[i]) === -1) {
         const day = calendar.querySelector(`[id="${allDays[i]}"]`);
-        day.classList.add('widthShape', 'filler');
+      //  day.classList.add('widthShape', 'filler');
         day.style.backgroundColor = 'white';
         day.title = 'Closed on this day';
 
@@ -257,40 +189,6 @@ function blockDaysNotOpen (calendar, datesOpen) {
       }
     }
   }
-}
-
-/**
- * Release booked day
- * @description Removes a day that has been previously booked.
- * @function releaseBookedDay
- * @param {HTMLElement} day - HTML div element representing the day.
- * @param {string} date - Date string in the format 'YYYY-MM-DD'.
- */
-function releaseBookedDay (day, date) {
-  const index = datesSelectedArray.indexOf(date);
-  unselectedStyle(day);
-  datesSelectedArray.splice(index, 1);
-  datesSelectedArrayObjects.splice(index, 1);
-
-  while (day.firstChild) {
-    day.firstChild.remove();
-  }
-}
-
-/**
- * Adds 1 to the month in a given date to make it more human-readable.
- * @param {string} date - The date in the format 'YYYY-MM-DD' or 'YYYY-M-D'.
- * @returns {string} - The modified date in the format 'YYYY-MM-DD'.
- * @throws {Error} - If the date parameter is not in the format 'YYYY-MM-DD' or 'YYYY-M-D'.
- */
-function humanDate (date) {
-  const dateParts = date.split('-');
-  const month = parseInt(dateParts[1]) + 1;
-  const day = parseInt(dateParts[2]);
-  const modifiedMonth = month < 10 ? `0${month}` : month;
-  const modifiedDay = day < 10 ? `0${day}` : day;
-  const modifiedDate = `${dateParts[0]}-${modifiedMonth}-${modifiedDay}`;
-  return modifiedDate;
 }
 
 
@@ -326,29 +224,41 @@ function sortTimes (val) {
 }
 
 /**
- * Release day of week
- * @function releaseDayOfWeekG
- * @param dayID id of the day to be released. N.b. day of week is stored as a data attribute
- * @todo make it use lastDateClicked (which is the day in context)
+ * Checks for overlap in an array of values.
+ *
+ * @param {Array} values - The array of values to check for overlap.
+ * @return {boolean} - Returns true if overlap is found, false otherwise.
+ * @@description not called anywhere (yet)
  */
-function releaseDayOfWeekG(dayId) {
-  const weekday = lastDateClicked.dataset.dayofweek;
-  const blockTheseDays = document.querySelectorAll("[data-dayofweek='" + weekday + "']");
-  for (var i = 0; i < blockTheseDays.length; i++) {
-    var blockDay = document.getElementById(blockTheseDays[i].id);
-    if (blockDay !== lastDateClicked) {
-      releaseBookedDay(blockDay, blockTheseDays[i].id);
-      removeTimeDisplay(blockTheseDays[i].id);
-    }
-    if (blockDay === lastDateClicked) {
-      // remove only the display:
-      //removeTimeDisplay(blockTheseDays[i].id);
+function checkOverlap (values) {
+  const numericalEquivalent = values.map(timeValueInMill);
+
+  for (let currentIndex = 2; currentIndex < numericalEquivalent.length; currentIndex += 2) {
+    const currentStart = numericalEquivalent[currentIndex];
+    const currentEnd = numericalEquivalent[currentIndex + 1];
+
+    for (let comparisonIndex = 0; comparisonIndex < numericalEquivalent.length; comparisonIndex += 2) {
+      if (currentIndex !== comparisonIndex) {
+        const comparisonStart = numericalEquivalent[comparisonIndex];
+        const comparisonEnd = numericalEquivalent[comparisonIndex + 1];
+
+        if (comparisonEnd >= currentStart && comparisonEnd <= currentEnd) {
+          return true;
+        } else if (currentStart >= comparisonStart && currentEnd <= comparisonEnd) {
+          return true;
+        } else if (currentStart === comparisonStart && currentEnd === comparisonEnd) {
+          return true;
+        } else if (currentEnd >= comparisonStart && currentEnd <= comparisonEnd) {
+          return true;
+        } else {
+          return false;
+        }
+      }
     }
   }
+  return false;
 }
 
-export { timeValueInMill, checkOverlap, clearSelection, getDaysInMonth, generateRandomString, getEarliestDate,
-  preloadDates, blockDaysNotOpen, releaseBookedDay, humanDate, sortTimes, formatDate };
-
-//bookDay singleDateChoice
-//releaseBookedDay datesSelectedArrayObjects datesSelectedArray
+export { timeValueInMill, checkOverlap, clearSelection, getDaysInMonth, 
+  generateRandomString, getEarliestDate, blockDaysNotOpen, 
+  sortTimes, humanDate, humandateToUTC, standardDateObject };

@@ -10,7 +10,8 @@
 
 import {
   getDaysInMonth, generateRandomString, getEarliestDate,
-  blockDaysNotOpen, humanDate, clearSelection
+  blockDaysNotOpen, clearSelection,
+  humanDate, standardDateObject
 } from './basicFunctions.js';
 import { GenerateTimeChooserModal } from './displayTimeChooserModal.js';
 import { colours, selectedStyle, unselectedStyle } from './styles.js';
@@ -63,7 +64,11 @@ customElements.define('swift-cal', class extends HTMLElement {
 
         preloadedDates: (this.dataset.preloadedDates) ? JSON.parse(this.dataset.preloadedDates) : false,
 
-        preloadedTooltip: this.dataset.preloadedTooltip
+        preloadedTooltip: this.dataset.preloadedTooltip,
+
+        blockDaysOfWeek: (this.dataset.blockDaysOfWeek) ? JSON.parse(this.dataset.blockDaysOfWeek) : false,
+        // data-start-date="2019-01-01"
+        startDate: this.dataset.startDate,
 
       });
 
@@ -73,8 +78,6 @@ customElements.define('swift-cal', class extends HTMLElement {
 
 function SwiftCal () {
   let timeChooser;
-  // for nested functions to access the outer object
-  const innerThis = this; 
   const config = {};
 
   const handler = {
@@ -90,7 +93,7 @@ function SwiftCal () {
       emitDateSelectedEvent();
       return true;
     }
-  }
+  };
   
   const dataTemplate = {
     datesSelectedArray: [],
@@ -104,7 +107,7 @@ function SwiftCal () {
     setTimeout(() => {
       const evt = new CustomEvent('dateSelect', { data: dynamicData });
       config.calendarContainer.dispatchEvent(evt);
-    }, 250)
+    }, 250);
   }
   
   const calendar = document.createElement('div');
@@ -145,6 +148,12 @@ function SwiftCal () {
 
     config.preloadedTooltip = configObj.preloadedTooltip || false;
 
+    config.blockDaysOfWeek = configObj.blockDaysOfWeek || false;
+
+    config.bookDaysOfWeek = configObj.bookDaysOfWeek || false;
+
+    config.startDate = configObj.startDate || false;
+
     config.endUser = configObj.endUser || false;
     config.endUserDurationChoice = configObj.endUserDurationChoice || false;
     config.backend = configObj.backend || false;
@@ -173,7 +182,7 @@ function SwiftCal () {
     }
 
     function newContainer () {
-      const promise = new Promise((resolve, reject) => {
+      const promise = new Promise((resolve) => {
         const newCal = document.createElement('div');
         newCal.classList.add('swift-cal');
         parentDiv.appendChild(newCal);
@@ -195,22 +204,19 @@ function SwiftCal () {
     const datesOpen = config.datesOpen;
     const language = config.language;
     const displayTimeChooserModal = config.displayTimeChooserModal;
-    
-    // TODO:
-    const endUser = config.endUser;
-    const endUserDurationChoice = config.endUserDurationChoice;
-    const backend = config.backend;
-    const displayBlocked = config.displayBlocked;
-
+    const blockWeekDays = config.blockDaysOfWeek;
+    const bookWeekDays = config.bookDaysOfWeek;
+    const startDate = config.startDate;
     let uniqueDayIndex = 0;
     // Calendar is defined globally within the constructor
     const calendarUniqueId = generateRandomString();
     calendar.id = `calendar-${calendarUniqueId}`;
     calendar.classList.add('calendar');
-
+    
     const months = [];
     const dateNow = new Date();
-    const earliestDate = (preloadedDates && preloadedDates.booked) ? getEarliestDate(preloadedDates) : dateNow;
+    // Repurposing getEarliestDate to format a date.
+    const earliestDate = (startDate) ? getEarliestDate([startDate]) : dateNow;
     const startMonth = earliestDate.getMonth();
     const monthNames = languages[language].generalTime.months;
     /* Create month view */
@@ -250,17 +256,14 @@ function SwiftCal () {
 
       /* Create week rows first week, it's reasigned f */
       let weekRow;
-      function makeNewWeekRow () {
-        weekRow = document.createElement('div');
-        month.appendChild(weekRow);
-        weekRow.classList.add('weekrow');
-        dayofweek = 0;
-      }
-
       // 42 days, i.e. 6 rows of 7
       for (let p = 0; p < 42; p++) {
         if (p === 0) {
-          makeNewWeekRow();
+          // made new week row
+          weekRow = document.createElement('div');
+          month.appendChild(weekRow);
+          weekRow.classList.add('weekrow');
+          dayofweek = 0;
         }
         if (p < startDayOfMonth) {
           const peghole = document.createElement('div');
@@ -285,7 +288,7 @@ function SwiftCal () {
 
           weekRow.appendChild(peghole);
 
-          if (i === 0 && p >= startDayOfMonth && p < (new Date().getDate() + startDayOfMonth)) {
+          if (i === 0 && p >= startDayOfMonth && p < (earliestDate.getDate() + startDayOfMonth)) {
             peghole.classList.add('filler');
           }
 
@@ -301,7 +304,11 @@ function SwiftCal () {
         }
 
         if ((p + 1) % 7 === 0) {
-          makeNewWeekRow();
+          // make new week row:
+          weekRow = document.createElement('div');
+          month.appendChild(weekRow);
+          weekRow.classList.add('weekrow');
+          dayofweek = 0;
         }
       }
       if (i === numberOfMonthsToDisplay - 1) {
@@ -316,13 +323,19 @@ function SwiftCal () {
     if(preloadedDates) {
       preloadDates(preloadedDates);
     }
+    if(blockWeekDays) {
+      blockDaysOfWeek(blockWeekDays);
+    }
+    if(bookWeekDays) {
+      bookDaysOfWeek(bookWeekDays);
+    }
   };
 
   let clickCount = 1;
   let dateClickedThrice = {
     date: null,
     count: 1
-  }
+  };
 
   function clikedThrice (date) {
 
@@ -402,7 +415,7 @@ function SwiftCal () {
    * Range select
    * @description Allows a range of dates to be selected
    * @function bookDates
-   * @param dates array
+   * @param dates Nodelist
    * @todo allow a range of length one to be selected
    * @fires bookDay for each day in a range
    */
@@ -507,11 +520,27 @@ function SwiftCal () {
     }
   }
 
+  function bookDaysOfWeek (dayIndex) {
+    const days = calendar.querySelectorAll(`[data-dayofweek="${dayIndex}"]`);
+    days.forEach((day) => {
+      bookDates([day], true);   
+    });
+  }
+
+  function blockDaysOfWeek (dayIndexArray) {
+    dayIndexArray.forEach((dayIndex) => {
+      const days = calendar.querySelectorAll(`[data-dayofweek="${dayIndex}"]`);
+      days.forEach((day) => {
+        day.classList.add('filler');
+      });
+    });
+  }
+
   function preloadDates (preloadedDates) {
     
     function getDivs (dates) {
       const dateDivs = [];
-      const promise = new Promise((resolve, reject) => {
+      const promise = new Promise((resolve) => {
         dates.forEach((date, i) => {
           const dateDiv = calendar.querySelector(`[data-humandate='${date}']`);
           dateDivs.push(dateDiv);
@@ -519,7 +548,7 @@ function SwiftCal () {
             blockNotPreloadedDates (dateDivs);
             resolve(dateDivs);
           }
-        })
+        });
       });
       return promise;
     }
@@ -538,36 +567,13 @@ function SwiftCal () {
       }
     }
 
-    getDivs(preloadedDates).then((dateDivs) => {
-      // bookDates(dateDivs);
-    })
-
+    getDivs(preloadedDates);
+    /*
+      .then((dateDivs) => {
+        // bookDates(dateDivs);
+      });
+    */
   }   
-
-
-
-  
-  const dateObjectTemplate = { day: 'day', humandate: 'YYYY-MM-DD', index: '0', UTC: 1698278400000};
-  /**
-   * Creates a standard date object with the given date.
-   *
-   * @param {any} date - Is a string YYYY-MM-DD months are counted from 0.
-   * @return {object} The standard date object with the given date.
-   */
-  function standardDateObject (date) {
-    const obj = Object.create(dateObjectTemplate);
-    obj.day = date.dataset.day;
-    obj.humandate =  date.dataset.humandate;
-    obj.index = date.dataset.dayindex;
-    obj.UTC = humandateToUTC(date.dataset.humandate);
-    return obj;
-  }
-  function humandateToUTC (humandate) {
-    let ints = humandate.split('-');
-    ints = ints.map((int) => parseInt(int));
-    ints[1] = ints[1] - 1;
-    return Date.UTC(ints[0], ints[1], ints[2]);
-  }
 }
 
 export { SwiftCal };

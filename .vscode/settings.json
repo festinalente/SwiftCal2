@@ -1,0 +1,7 @@
+{
+  "markdown.validate.unusedLinkDefinitions.enabled": "error",
+  "standard.engine": "semistandard",
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.fontFamily": "'Droid Sans Mono', 'monospace', monospace"
+}
