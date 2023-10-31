@@ -177,7 +177,7 @@ function blockDaysNotOpen (calendar, datesOpen) {
     for (let i = 0; i < allDays.length; i++) {
       if (openDays.indexOf(allDays[i]) === -1) {
         const day = calendar.querySelector(`[id="${allDays[i]}"]`);
-      //  day.classList.add('widthShape', 'filler');
+        //day.classList.add('widthShape', 'filler');
         day.style.backgroundColor = 'white';
         day.title = 'Closed on this day';
 
