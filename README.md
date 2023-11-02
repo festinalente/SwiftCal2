@@ -32,7 +32,7 @@ https://codepen.io/tomasMetcalfe/pen/PoXRQKJ
 https://festinalente.github.io/SwiftCal2/
 
 ## Contribute
-To contibute, simply git clone the repo, then on your machine run "npm install" in that directory, then run grunt watch and start hacking away. The quickest way to then see changes is to copy index.html in the root to another html file, and open that file in a browser. 
+To contribute, simply git clone the repo, then on your machine run "npm install" in that directory, then run grunt watch and start hacking away. The quickest way to then see changes is to copy index.html in the root to another html file, and open that file in a browser. 
 ### Contributions wanted: 
 Languages come to mind... I have added English (enGb) and Portuguese (ptPt), others are welcome. See
 "languages.js in the folder "proBundlingJS"
