@@ -96,6 +96,7 @@
   <h2><a href="#examples">View more examples</a></h2>
   <h2><a href="https://www.npmjs.com/package/swiftcal2">View on NPM</a></h2>
 
+  <p>Default calendar: select a range by clicking/tapping on two dates, select a single data by triple clicking.</p>
   <div class="eg"></div>
 
   <div class="attentionDiv">
@@ -105,7 +106,7 @@
       <li><a href="#data">The dynamicData object</a></li>
       <li><a href="#events">Custom events emitted</a></li>
       <li><a href="#customizing">How to customize</a></li>
-      <li><a href="#instantiation">Two ways to instantiate</a></li>
+      <li><a href="#instantiation">Options and instantiation</a></li>
       <li><a href="#examples">Examples</a></li>    
       <li><a href="#usage">Future features planned</a></li>
     </ul>
@@ -187,7 +188,7 @@
       <li><span class="code">data-preloaded-tooltip - Sets a title attribute on each preloaded date</span></li>
       <li><span class="code">data-block-days-of-week='[6]' - Allows days of the week to be blocked (string representation of an array of the
         indexes (Sunday, 0; Monday, 1; Tuesday 2; Wednesday, 3; Thursday, 4; Friday, 5; Saturday, 6))</span></li>
-      <li><span class="code">data-book-days-of-week='[6]' - Allows a weekly reoccuring booking of a day (string representation of an array of the
+      <li><span class="code">data-book-days-of-week='[6]' - Allows a weekly reoccurring booking of a day (string representation of an array of the
         indexes (Sunday, 0; Monday, 1; Tuesday 2; Wednesday, 3; Thursday, 4; Friday, 5; Saturday, 6))</span></li>
       <li><span class="code">data-start-date='YYYY-MM-DD' - Set a start date other than the current date</span></li>
     </ul>
@@ -250,7 +251,7 @@
 
 <b>datesSelectedArray is mostly used for tracking internally.
 The outer array is all the dates selected (one or more ranges).
-The inner array is specific ranges of succesive dates.</b>
+The inner array is specific ranges of successive dates.</b>
 
   "datesSelectedArray": [
     [
@@ -331,8 +332,8 @@ The inner array is specific ranges of succesive dates.</b>
     (day.toString().length === 1) ? day = `0${day}` : day;
     const month = (date.getMonth() + 1);
     const year = date.getFullYear();
-    const formated = `${year}-${month}-${day}`;
-    return formated;
+    const formatted = `${year}-${month}-${day}`;
+    return formatted;
   }
 
   const demoData = [

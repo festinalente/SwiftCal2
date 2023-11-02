@@ -5,7 +5,7 @@
 
 /**
  * @typedef {Object} hasTheseStyles
- * @property {string} hasTheseStyles - Lists styles references in a funtion
+ * @property {string} hasTheseStyles - Lists styles references in a function
  */
 
 import {
@@ -169,7 +169,7 @@ function SwiftCal () {
     const parentDiv = config.parentDiv;
     /*
       If called from html as a custom component the component itself is passed (calendarContainer)
-      If called via JS while the component isn't a webcomponent in the strictest sense, it still
+      If called via JS while the component isn't a web component in the strictest sense, it still
       behaves like one and is encapsulated in a shadow.
     */
     if (config.calendarContainer) {
@@ -254,7 +254,7 @@ function SwiftCal () {
         dayNames.appendChild(day);
       });
 
-      /* Create week rows first week, it's reasigned f */
+      /* Create week rows first week, it's reassigned f */
       let weekRow;
       // 42 days, i.e. 6 rows of 7
       for (let p = 0; p < 42; p++) {
