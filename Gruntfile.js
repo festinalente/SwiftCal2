@@ -7,20 +7,7 @@ module.exports = (grunt) => {
         files: {
           'clientSideJS/calendar.js': [
             'preBundlingJS/*.css',
-            'preBundlingJS/*.js',
-            /*
-            'preBundlingJS/calendarApp.css',
-            'preBundlingJS/basicFunctions.js',
-            'preBundlingJS/calendarGenerator.js',
-            'preBundlingJS/dateOnClickEvents.js',
-            'preBundlingJS/displayTimeChooserModal.js',
-            'preBundlingJS/displayTimesOnDate.js',
-            'preBundlingJS/domFunctions.js',
-            'preBundlingJS/domGenerator.js',
-            'preBundlingJS/erros.js',
-            'preBundlingJS/languages.js',
-            'preBundlingJS/styles.js'
-            */
+            'preBundlingJS/*.js'
           ]
         },
         options: {
@@ -30,7 +17,10 @@ module.exports = (grunt) => {
             debug: true
           },
           transform: [
-            ['browserify-css', { global: true }],
+            ['browserify-css', { 
+              global: true, 
+              autoInject: false
+            }],
             ['babelify', {
               presets: [
                 [
@@ -71,4 +61,4 @@ module.exports = (grunt) => {
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-browserify');
-}
+};
