@@ -12,3 +12,7 @@
 * values are deleted from div on deselect
 * allow different times for different selections
 * added ability to add ranges of length 1
+
+2026-02-03 Tomás Metcalfe <tomas@appyou.pro>
+
+* fixed bug in preselected date display (demo). 

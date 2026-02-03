@@ -330,7 +330,8 @@ The inner array is specific ranges of successive dates.</b>
     (day.toString().length === 1) ? day = `0${day}` : day;
     const month = (date.getMonth() + 1);
     const year = date.getFullYear();
-    const formatted = `${year}-${month}-${day}`;
+    const formatted = `${year}-0${month}-${day}`;
+    console.log(formatted)
     return formatted;
   }
 

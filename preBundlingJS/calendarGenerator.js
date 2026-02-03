@@ -23,7 +23,7 @@ import style from './calendarApp.css';
  * @param {number} months - The number of months to add.
  * @returns {Date} - The updated date.
  */
-Date.prototype.addMonths = function(months) {
+Date.prototype.addMonths = function (months) {
   const date = new Date(this);
   const years = Math.floor(months / 12);
   const remainingMonths = months % 12;
@@ -41,12 +41,12 @@ customElements.define('swift-cal', class extends HTMLElement {
     super();
     const self = this;
     function stToBoolean (st) {
-      if(st === 'true') {
+      if (st === 'true') {
         return true;
       }
       return false;
     }
-    
+
     const calendar = new SwiftCal();
     calendar.generateCalendar(
       {
@@ -59,7 +59,7 @@ customElements.define('swift-cal', class extends HTMLElement {
         singleDateChoice: stToBoolean(this.dataset.singleDateChoice),
 
         language: this.dataset.language,
-        //data-select-multiple
+        // data-select-multiple
         selectMultiple: this.dataset.selectMultiple,
 
         preloadedDates: (this.dataset.preloadedDates) ? JSON.parse(this.dataset.preloadedDates) : false,
@@ -68,7 +68,7 @@ customElements.define('swift-cal', class extends HTMLElement {
 
         blockDaysOfWeek: (this.dataset.blockDaysOfWeek) ? JSON.parse(this.dataset.blockDaysOfWeek) : false,
         // data-start-date="2019-01-01"
-        startDate: this.dataset.startDate,
+        startDate: this.dataset.startDate
 
       });
 
@@ -82,7 +82,7 @@ function SwiftCal () {
 
   const handler = {
     get: (target, key) => {
-      if(typeof target[key] === 'object' && target[key] !== null) {
+      if (typeof target[key] === 'object' && target[key] !== null) {
         return new Proxy(target[key], handler);
       }
 
@@ -94,7 +94,7 @@ function SwiftCal () {
       return true;
     }
   };
-  
+
   const dataTemplate = {
     datesSelectedArray: [],
     datesSelectedArrayObjects: [],
@@ -109,7 +109,7 @@ function SwiftCal () {
       config.calendarContainer.dispatchEvent(evt);
     }, 250);
   }
-  
+
   const calendar = document.createElement('div');
 
   this.returnCalendar = () => {
@@ -212,7 +212,7 @@ function SwiftCal () {
     const calendarUniqueId = generateRandomString();
     calendar.id = `calendar-${calendarUniqueId}`;
     calendar.classList.add('calendar');
-    
+
     const months = [];
     const dateNow = new Date();
     // Repurposing getEarliestDate to format a date.
@@ -316,33 +316,31 @@ function SwiftCal () {
       }
     }
     // Options:
-    if(displayTimeChooserModal) {
+    if (displayTimeChooserModal) {
       timeChooser = new GenerateTimeChooserModal(config, dynamicData, calendar);
       timeChooser.generateModal();
     }
-    if(preloadedDates) {
+    if (preloadedDates) {
       preloadDates(preloadedDates);
     }
-    if(blockWeekDays) {
+    if (blockWeekDays) {
       blockDaysOfWeek(blockWeekDays);
     }
-    if(bookWeekDays) {
+    if (bookWeekDays) {
       bookDaysOfWeek(bookWeekDays);
     }
   };
 
   let clickCount = 1;
-  let dateClickedThrice = {
+  const dateClickedThrice = {
     date: null,
     count: 1
   };
 
   function clikedThrice (date) {
-
     if (dateClickedThrice.date === date) {
       dateClickedThrice.count++;
-    } 
-    else {
+    } else {
       // reset for new date
       dateClickedThrice.date = date;
       dateClickedThrice.count = 1;
@@ -355,8 +353,7 @@ function SwiftCal () {
     return false;
   }
 
-  function dateOnClickEvents (e) {    
-
+  function dateOnClickEvents (e) {
     const dateDiv = e.target;
     clickCount++;
 
@@ -374,16 +371,15 @@ function SwiftCal () {
       timeChooserToggle();
     }
 
-
     function timeChooserToggle () {
-      if (config.displayTimeChooserModal) { 
+      if (config.displayTimeChooserModal) {
         timeChooser.show();
         timeChooser.writeToDateDiv();
         timeChooser.writeToDynamicData();
       }
     }
 
-    function range(dateDiv) {
+    function range (dateDiv) {
       const lastDate = dateClickedThrice.date;
       const thrice = clikedThrice(dateDiv.dataset.humandate);
       if (thrice) {
@@ -403,11 +399,10 @@ function SwiftCal () {
       }
       if (priorWasSingle === false && clickCount % 2 === 1) {
         bookDates([dateDiv]);
-        //timeChooserToggle();
-        // rule to check if range is a longer than 1: 
-        if(dateClickedThrice.date !== lastDate) { timeChooserToggle(); }
-        return;
-      }     
+        // timeChooserToggle();
+        // rule to check if range is a longer than 1:
+        if (dateClickedThrice.date !== lastDate) { timeChooserToggle(); }
+      }
     }
   }
 
@@ -420,16 +415,14 @@ function SwiftCal () {
    * @fires bookDay for each day in a range
    */
 
-  let priorWasSingle = false; 
+  let priorWasSingle = false;
   function bookDates (arrayOfDateDivs, singleDate) {
-
     /**
      * Creates a new selection in the dynamicData object.
      * @return {object} An object containing the tracking array "newArray" and objects array.
      */
 
     function createNewSelection (priorWasSingle) {
-
       const parentAr = dynamicData.datesSelectedArray;
       const parentArObj = dynamicData.datesSelectedArrayObjects;
       let newArray, newObjectsArray;
@@ -438,7 +431,7 @@ function SwiftCal () {
 
       if (!priorWasSingle && config.selectRange && newArray && newArray.length === 1) {
         newObjectsArray = parentArObj[parentArObj.length - 1];
-        return { newArray, newObjectsArray }; 
+        return { newArray, newObjectsArray };
       }
 
       newArray = [];
@@ -446,10 +439,9 @@ function SwiftCal () {
       parentAr.push(newArray);
       parentArObj.push(newObjectsArray);
       return { newArray, newObjectsArray };
-
     }
 
-    // create new selections or retrieve the last selection: 
+    // create new selections or retrieve the last selection:
     const { newArray, newObjectsArray } = createNewSelection(priorWasSingle);
 
     for (let i = 0; i < arrayOfDateDivs.length; i++) {
@@ -458,24 +450,24 @@ function SwiftCal () {
       bookDay(dateDiv);
     }
     // store win the previous selection was a range of length 1, read by "createNewSelection"
-    priorWasSingle = (singleDate) ? true : false;
+    priorWasSingle = !!(singleDate);
 
     // if the date is in a previous selection, that selection is spliced
     function findDateSelection (date) {
       // console.log(date);
       const store = dynamicData.datesSelectedArrayObjects;
-      for(let j = 0; j < store.length; j++){
+      for (let j = 0; j < store.length; j++) {
         // the array in question
         const singleSelection = store[j];
         // data attr of html element
         const dateValue = date.dataset.humandate;
-        const search = () => singleSelection.find( (dateStored) => dateStored.humandate === dateValue);
-        if(search()) {
+        const search = () => singleSelection.find((dateStored) => dateStored.humandate === dateValue);
+        if (search()) {
           singleSelection.forEach((date) => {
             // remove selection colour
             const dayDiv = calendar.querySelector(`[data-humandate='${date.humandate}']`);
             unselectedStyle(dayDiv);
-            // remove times, if any: 
+            // remove times, if any:
             while (dayDiv.children.length > 0) {
               dayDiv.removeChild(dayDiv.lastChild);
             }
@@ -486,7 +478,7 @@ function SwiftCal () {
         }
       }
     }
- 
+
     if (config.selectRange) {
       const startDate = newObjectsArray[0];
       const startIndex = startDate.index;
@@ -494,7 +486,7 @@ function SwiftCal () {
       const endDate = newObjectsArray[1] || startDate;
       const endIndex = (endDate) ? endDate.index : false;
 
-      let [low, high] = [parseInt(startIndex), parseInt(endIndex)].sort((a, b) => a - b);
+      const [low, high] = [parseInt(startIndex), parseInt(endIndex)].sort((a, b) => a - b);
 
       for (let i = low; i <= high; i++) {
         const dateDiv = calendar.querySelector(`[data-dayindex='${i}']`);
@@ -523,7 +515,7 @@ function SwiftCal () {
   function bookDaysOfWeek (dayIndex) {
     const days = calendar.querySelectorAll(`[data-dayofweek="${dayIndex}"]`);
     days.forEach((day) => {
-      bookDates([day], true);   
+      bookDates([day], true);
     });
   }
 
@@ -537,43 +529,43 @@ function SwiftCal () {
   }
 
   function preloadDates (preloadedDates) {
-    
+    if (typeof preloadDates[0] !== 'string') {
+      throw Error('Dates should be provided as strings in the format YYYY-MM-DD');
+    }
+    if (preloadDates[0].split('-')[0].length !== 2) {
+      throw Error('Year requires 4 digits, e.g. 2026');
+    }
+    if (preloadDates[0].split('-')[1].length !== 2) {
+      throw Error('Month requires 2 digits, 01 for January');
+    }
+    if (preloadDates[0].split('-')[2].length !== 2) {
+      throw Error('Day requires 2 digits, 01 for the first day of the month');
+    }
+
     function getDivs (dates) {
-      const dateDivs = [];
-      const promise = new Promise((resolve) => {
-        dates.forEach((date, i) => {
-          const dateDiv = calendar.querySelector(`[data-humandate='${date}']`);
-          dateDivs.push(dateDiv);
-          if (i === preloadedDates.length - 1) {
-            blockNotPreloadedDates (dateDivs);
-            resolve(dateDivs);
-          }
-        });
-      });
-      return promise;
+      return dates
+        .map(date => calendar.querySelector(`[data-humandate='${date}']`))
+        .filter(Boolean); // removes nulls
     }
 
     function blockNotPreloadedDates (dateDivs) {
       const nonOptions = calendar.querySelectorAll('.dayTime');
-      for (let index = 0; index < nonOptions.length; index++) {
-        const day = nonOptions[index];
-        if(!dateDivs.includes(day)){
+
+      for (let i = 0; i < nonOptions.length; i++) {
+        const day = nonOptions[i];
+
+        if (!dateDivs.includes(day)) {
           day.classList.add('filler');
-        }
-        else {
+        } else {
           day.classList.add('preloaded');
           day.title = config.preloadedTooltip;
-        } 
+        }
       }
     }
 
-    getDivs(preloadedDates);
-    /*
-      .then((dateDivs) => {
-        // bookDates(dateDivs);
-      });
-    */
-  }   
+    const dateDivs = getDivs(preloadedDates);
+    blockNotPreloadedDates(dateDivs);
+  }
 }
 
 export { SwiftCal };
