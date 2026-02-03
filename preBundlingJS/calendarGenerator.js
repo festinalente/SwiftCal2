@@ -331,6 +331,10 @@ function SwiftCal () {
     }
   };
 
+  this.preloadedDates = (dates) => {
+    calendar.preloadDates(dates);
+  };
+
   let clickCount = 1;
   const dateClickedThrice = {
     date: null,
@@ -529,16 +533,17 @@ function SwiftCal () {
   }
 
   function preloadDates (preloadedDates) {
-    if (typeof preloadDates[0] !== 'string') {
-      throw Error('Dates should be provided as strings in the format YYYY-MM-DD');
+    if (typeof preloadedDates[0] !== 'string') {
+      throw Error(`Dates should be provided as strings in the format YYYY-MM-DD, Preloaded dates is ${preloadedDates}
+         and the first date is ${preloadedDates[0]}`);
     }
-    if (preloadDates[0].split('-')[0].length !== 2) {
+    if (preloadedDates[0].split('-')[0].length !== 2) {
       throw Error('Year requires 4 digits, e.g. 2026');
     }
-    if (preloadDates[0].split('-')[1].length !== 2) {
+    if (preloadedDates[0].split('-')[1].length !== 2) {
       throw Error('Month requires 2 digits, 01 for January');
     }
-    if (preloadDates[0].split('-')[2].length !== 2) {
+    if (preloadedDates[0].split('-')[2].length !== 2) {
       throw Error('Day requires 2 digits, 01 for the first day of the month');
     }
 
