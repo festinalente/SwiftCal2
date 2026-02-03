@@ -537,7 +537,7 @@ function SwiftCal () {
       throw Error(`Dates should be provided as strings in the format YYYY-MM-DD, Preloaded dates is ${preloadedDates}
          and the first date is ${preloadedDates[0]}`);
     }
-    if (preloadedDates[0].split('-')[0].length !== 2) {
+    if (preloadedDates[0].split('-')[0].length !== 4) {
       throw Error('Year requires 4 digits, e.g. 2026');
     }
     if (preloadedDates[0].split('-')[1].length !== 2) {
