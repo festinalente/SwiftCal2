@@ -11,7 +11,7 @@
 import {
   getDaysInMonth, generateRandomString, getEarliestDate,
   blockDaysNotOpen, clearSelection,
-  humanDate, standardDateObject
+  humanDate, standardDateObject, proxyToPlainObjectHelper, debounce
 } from './basicFunctions.js';
 import { GenerateTimeChooserModal } from './displayTimeChooserModal.js';
 import { colours, selectedStyle, unselectedStyle } from './styles.js';
@@ -89,6 +89,7 @@ function SwiftCal () {
       return target[key];
     },
     set: (target, prop, value) => {
+      if (target[prop] === value) return true;
       target[prop] = value;
       emitDateSelectedEvent();
       return true;
@@ -103,12 +104,12 @@ function SwiftCal () {
 
   const dynamicData = new Proxy(dataTemplate, handler);
 
-  function emitDateSelectedEvent () {
-    setTimeout(() => {
-      const evt = new CustomEvent('dateSelect', { data: dynamicData });
-      config.calendarContainer.dispatchEvent(evt);
-    }, 250);
-  }
+  const emitDateSelectedEvent = debounce(() => {
+    const evt = new CustomEvent('dateSelect', {
+      detail: { date: proxyToPlainObjectHelper(dynamicData) }
+    });
+    config.calendarContainer.dispatchEvent(evt);
+  }, 250);
 
   const calendar = document.createElement('div');
 
@@ -159,6 +160,8 @@ function SwiftCal () {
     config.backend = configObj.backend || false;
     config.displayBlocked = configObj.displayBlocked || false;
     config.datesOpen = configObj.datesOpen || false;
+
+    config.customClickEvent = configObj.customClickEvent || false;
   };
 
   this.generateCalendar = (configObj) => {
@@ -360,6 +363,10 @@ function SwiftCal () {
   function dateOnClickEvents (e) {
     const dateDiv = e.target;
     clickCount++;
+
+    if (config.customClickEvent) {
+      return config.customClickEvent(e);
+    }
 
     if (dynamicData.disabled) {
       return;

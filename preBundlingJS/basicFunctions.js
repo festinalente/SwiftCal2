@@ -30,7 +30,7 @@ function humandateToUTC (humandate) {
 }
 
 // model object
-const dateObjectTemplate = { day: 'day', humandate: 'YYYY-MM-DD', index: '0', UTC: 1698278400000};
+const dateObjectTemplate = { day: 'day', humandate: 'YYYY-MM-DD', index: '0', UTC: 1698278400000 };
 /**
  * Creates a standard date object with the given date.
  *
@@ -40,7 +40,7 @@ const dateObjectTemplate = { day: 'day', humandate: 'YYYY-MM-DD', index: '0', UT
 function standardDateObject (date) {
   const obj = Object.create(dateObjectTemplate);
   obj.day = date.dataset.day;
-  obj.humandate =  date.dataset.humandate;
+  obj.humandate = date.dataset.humandate;
   obj.index = date.dataset.dayindex;
   obj.UTC = humandateToUTC(date.dataset.humandate);
   return obj;
@@ -80,7 +80,7 @@ function getDaysInMonth (month, year) {
 }
 
 /**
- * Clears the selection in the calendar by removing the selected dates and 
+ * Clears the selection in the calendar by removing the selected dates and
  * resetting the dynamic data.
  *
  * @param {Object} calendar - The calendar component.
@@ -129,7 +129,26 @@ function randomBytes (length) {
   }
 }
 
-function generateRandomString() {
+function proxyToPlainObjectHelper (proxy) {
+  if (Array.isArray(proxy)) {
+    // If it's an array, map over the array and convert each element recursively
+    return proxy.map(proxyToPlainObjectHelper);
+  } else if (proxy !== null && typeof proxy === 'object') {
+    // If it's an object (and not null), recursively convert each property
+    const plainObject = {};
+    for (const key in proxy) {
+      if (Object.prototype.hasOwnProperty.call(proxy, key)) {
+        plainObject[key] = proxyToPlainObjectHelper(proxy[key]);
+      }
+    }
+    return plainObject;
+  } else {
+    // For primitive values (numbers, strings, etc.), just return the value
+    return proxy;
+  }
+}
+
+function generateRandomString () {
   const randomString = randomBytes(10);
   if (document.querySelector('#calendar-' + randomString)) {
     return generateRandomString();
@@ -138,8 +157,8 @@ function generateRandomString() {
   }
 }
 
-//WE WERE SETTING UP THE CALENDAR TO RENDER DATES IN THE PAST:
-/* Warning: Contemplates daylight saving time*/
+// WE WERE SETTING UP THE CALENDAR TO RENDER DATES IN THE PAST:
+/* Warning: Contemplates daylight saving time */
 
 /**
  * Calculates and returns the earliest date from a given array of preloaded dates.
@@ -177,7 +196,7 @@ function blockDaysNotOpen (calendar, datesOpen) {
     for (let i = 0; i < allDays.length; i++) {
       if (openDays.indexOf(allDays[i]) === -1) {
         const day = calendar.querySelector(`[id="${allDays[i]}"]`);
-        //day.classList.add('widthShape', 'filler');
+        // day.classList.add('widthShape', 'filler');
         day.style.backgroundColor = 'white';
         day.title = 'Closed on this day';
 
@@ -191,18 +210,17 @@ function blockDaysNotOpen (calendar, datesOpen) {
   }
 }
 
-
 function sortTimes (val) {
-  var sorted = [];
+  const sorted = [];
   return enumerate(val);
 
-  function sortNumber(a, b) {
+  function sortNumber (a, b) {
     return a - b;
   }
 
-  function enumerate(values) {
-    var numericalEquivalent = [];
-    for (var i = 0; i < values.length; i++) {
+  function enumerate (values) {
+    const numericalEquivalent = [];
+    for (let i = 0; i < values.length; i++) {
       numericalEquivalent.push(timeValueInMill(values[i]));
       if (i === values.length - 1) {
         return sort(values, numericalEquivalent);
@@ -210,11 +228,11 @@ function sortTimes (val) {
     }
   }
 
-  function sort(values, numericalEquivalent) {
-    var numericalEquivalentClone = JSON.parse(JSON.stringify(numericalEquivalent));
-    var sortedInt = numericalEquivalent.sort(sortNumber);
-    for (var p = 0; p < numericalEquivalentClone.length; p++) {
-      var newIndex = sortedInt.indexOf(numericalEquivalentClone[p]);
+  function sort (values, numericalEquivalent) {
+    const numericalEquivalentClone = JSON.parse(JSON.stringify(numericalEquivalent));
+    const sortedInt = numericalEquivalent.sort(sortNumber);
+    for (let p = 0; p < numericalEquivalentClone.length; p++) {
+      const newIndex = sortedInt.indexOf(numericalEquivalentClone[p]);
       sorted.splice(p, 1, values[newIndex]);
       if (p === numericalEquivalent.length - 1) {
         return sorted;
@@ -259,6 +277,17 @@ function checkOverlap (values) {
   return false;
 }
 
-export { timeValueInMill, checkOverlap, clearSelection, getDaysInMonth, 
-  generateRandomString, getEarliestDate, blockDaysNotOpen, 
-  sortTimes, humanDate, humandateToUTC, standardDateObject };
+function debounce (fn, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+export {
+  timeValueInMill, checkOverlap, clearSelection, getDaysInMonth,
+  generateRandomString, getEarliestDate, blockDaysNotOpen,
+  sortTimes, humanDate, humandateToUTC, standardDateObject,
+  proxyToPlainObjectHelper, debounce
+};

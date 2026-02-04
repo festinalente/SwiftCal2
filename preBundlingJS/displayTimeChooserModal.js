@@ -1,26 +1,27 @@
 import { languages } from './languages.js';
+import { proxyToPlainObjectHelper, debounce } from './basicFunctions.js';
 
 /**
  * Generates a time chooser modal for selecting time. Called in calendarGenerator.js
  *
- * @param {Object} config - The configuration object. 
+ * @param {Object} config - The configuration object.
  * @param {Object} dynamicData - The dynamic data object.
  * @param {HTMLElement} calendar - The calendar element.
  * @return {Function} The generated time chooser modal.
  */
 function GenerateTimeChooserModal (config, dynamicData, calendar) {
-
   /**
    * A custom event emitted when a time is added or selected
    *
    * @return {void} This function does not return any value.
    */
-  function emitTimeSelectedEvent () {
-    setTimeout(() => {
-      const evt = new CustomEvent('timeSelect', { data: dynamicData });
-      config.calendarContainer.dispatchEvent(evt);
-    }, 250);
-  }
+
+  const emitTimeSelectedEvent = debounce(() => {
+    const evt = new CustomEvent('timeSelect', {
+      detail: { date: proxyToPlainObjectHelper(dynamicData) }
+    });
+    config.calendarContainer.dispatchEvent(evt);
+  }, 250);
 
   let timeChooserModal;
 
@@ -29,7 +30,7 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
   this.getSelectedTimes = () => {
     return selection;
   };
-  
+
   this.generateModal = () => {
     return generateModal();
   };
@@ -39,7 +40,7 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
     return timeChooserModal.show();
   };
 
-  this.writeToDateDiv =  () => {
+  this.writeToDateDiv = () => {
     writeToDateDiv();
   };
 
@@ -52,30 +53,29 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
    *
    * @return {Promise} A promise that resolves to the generated time chooser modal.
    */
-  function generateModal() {
+  function generateModal () {
     const promise = new Promise((resolve) => {
-
       timeChooserModal = document.createElement('dialog');
       timeChooserModal.classList.add('timeChooserModal');
       calendar.appendChild(timeChooserModal);
-  
+
       const timeCont = document.createElement('div');
       timeCont.classList.add('timeCont');
       timeChooserModal.appendChild(timeCont);
-  
+
       const timeChooser = document.createElement('div');
       timeChooser.classList.add('timeChooser');
       timeCont.appendChild(timeChooser);
-  
+
       const controlsDiv = document.createElement('div');
       controlsDiv.classList.add('deleteDiv');
       timeChooser.appendChild(controlsDiv);
-  
+
       function closeFn () {
         calendar.style.overflow = 'scroll';
         timeChooserModal.close();
       }
-    
+
       function innerComponents () {
         const timePickerContainer = document.createElement('div');
         timePickerContainer.classList.add('timePickerContainer');
@@ -86,15 +86,14 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
         timePickerContainer.appendChild(titleDiv);
         makeDropDowns(languages[config.language].timeWidget.start, timePickerContainer);
         makeDropDowns(languages[config.language].timeWidget.end, timePickerContainer);
-        
-        // setTimeForAllTickBox(timePickerContainer); 
-        
+
+        // setTimeForAllTickBox(timePickerContainer);
       }
 
       makeButton(controlsDiv, 'deleteButton', '+', 'add time', 'click', innerComponents);
       makeButton(controlsDiv, 'deleteButton', '-', 'remove time', 'click', removeTimeValuesOnDate);
       makeButton(controlsDiv, 'deleteButton', 'x', 'close', 'click', closeFn);
-      
+
       resolve(timeChooserModal);
     });
     return promise;
@@ -102,7 +101,7 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
 
   function writeToDateDiv () {
     if (config.displayTimeSelectionOnDate) {
-      dynamicData.datesSelectedArray[dynamicData.datesSelectedArray.length-1].forEach((daySelected) => {
+      dynamicData.datesSelectedArray[dynamicData.datesSelectedArray.length - 1].forEach((daySelected) => {
         write(daySelected);
       });
     }
@@ -147,49 +146,49 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
     });
     parent.appendChild(button);
   }
-  
+
   function makeDropDowns (contextText, timePickerContainer) {
     // The time container
     const container = document.createElement('div');
     container.classList.add('timeContainer');
     container.dataset.context = contextText;
     timePickerContainer.appendChild(container);
-  
+
     const timeForContext = { [contextText]: {} };
 
     selection.push(timeForContext);
-  
+
     // Make label
     const label = document.createElement('p');
     label.classList.add('timeSelectP');
     label.textContent = `${contextText}:`;
     container.appendChild(label);
-  
+
     // Make hour selector
     const timeSelectorDiv = document.createElement('div');
     timeSelectorDiv.dataset.context = contextText;
     container.appendChild(timeSelectorDiv);
-  
+
     makeSelector('hh', 23, timeSelectorDiv, contextText, timePickerContainer, timeForContext);
     makeSelector('mm', 59, timeSelectorDiv, contextText, timePickerContainer, timeForContext);
   }
-  
+
   function makeSelector (type, limit, timeSelectorDiv, contextText, timePickerContainer, timeForContext) {
     const dropDown = document.createElement('select');
     dropDown.classList.add(type, 'timeSelect');
     timeSelectorDiv.appendChild(dropDown);
-  
+
     dropDown.dataset.type = type;
     dropDown.dataset.context = contextText;
-  
+
     const placeholder = document.createElement('option');
     placeholder.textContent = type;
     placeholder.value = '00';
-  
+
     // {"Start":{"hh":"00"}},{"Start":{"mm":"00"}}
     timeForContext[contextText][type] = placeholder.value;
     dropDown.appendChild(placeholder);
-  
+
     let i = 0;
     while (i <= limit) {
       const hour = document.createElement('option');
@@ -202,7 +201,7 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
       dropDown.appendChild(hour);
       i++;
     }
-  
+
     dropDown.addEventListener('change', () => {
       timeForContext[contextText][type] = dropDown.value;
       writeToDynamicData();
@@ -212,13 +211,13 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
   }
 
   function writeToDynamicData () {
-    dynamicData.datesSelectedArrayObjects[dynamicData.datesSelectedArrayObjects.length-1].forEach((daySelected) => {
+    dynamicData.datesSelectedArrayObjects[dynamicData.datesSelectedArrayObjects.length - 1].forEach((daySelected) => {
       const times = JSON.parse(JSON.stringify(selection));
       daySelected.times = times;
       const names = Object.keys(times);
       Object.values(times).forEach((time, i) => {
-        let val = Object.values(time);
-        let hhmmss = Object.values(val[0]);
+        const val = Object.values(time);
+        const hhmmss = Object.values(val[0]);
         daySelected.times[names[i]].UTC = humandateToUTC(daySelected.humandate, hhmmss);
       });
     });
@@ -234,7 +233,7 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
     ints[1] = ints[1] - 1;
     return Date.UTC(ints[0], ints[1], ints[2], hh, mm, ss);
   }
-  
+
   function removeTimeValuesOnDate () {
     const d = dynamicData.datesSelectedArrayObjects;
     const lastChoice = d[d.length - 1];
@@ -256,12 +255,12 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
    * @return {HTMLElement} Returns a HTML checkbox to select all days of a particular type (e.g. all Mondays).
    * @description NOT IMPLEMENTED
    */
-  
+
   function setTimeForAllTickBox (targetDiv) {
-    const day = dynamicData.datesSelectedArray[dynamicData.datesSelectedArray.length-1];
+    const day = dynamicData.datesSelectedArray[dynamicData.datesSelectedArray.length - 1];
     const dayCode = calendar.querySelector(`[data-humandate='${day}']`).dataset.dayofweek;
     const text = formatDayText(dayCode);
-    
+
     const labelfor = document.createElement('p');
     labelfor.textContent = text;
     labelfor.htmlFor = 'setTimeForAll';
@@ -276,7 +275,6 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
       // Book dates method needs to be exposed in a manner it can be called from here
     });
   }
-  
 
   /**
  * Formats the day of the week and returns it as a string.
@@ -294,7 +292,6 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
     const afterText = languages[config.language].formatDayText.textAfter;
     return `${beforeText} ${formattedDay}${pluralism} ${afterText}`;
   }
-
 }
 
 export { GenerateTimeChooserModal };

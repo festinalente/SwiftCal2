@@ -16,3 +16,7 @@
 2026-02-03 Tomás Metcalfe <tomas@appyou.pro>
 
 * fixed bug in preselected date display (demo). 
+
+2026-02-04 Tomás Metcalfe <tomas@appyou.pro>
+
+* Improved event emission, debouncing events and returning a plain object with dates instead of a reference to the proxied data. 
