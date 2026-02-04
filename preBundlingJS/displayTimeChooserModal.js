@@ -18,7 +18,9 @@ function GenerateTimeChooserModal (config, dynamicData, calendar) {
 
   const emitTimeSelectedEvent = debounce(() => {
     const evt = new CustomEvent('timeSelect', {
-      detail: { date: proxyToPlainObjectHelper(dynamicData) }
+      detail: { date: proxyToPlainObjectHelper(dynamicData) },
+      bubbles: true,
+      composed: true
     });
     config.calendarContainer.dispatchEvent(evt);
   }, 250);

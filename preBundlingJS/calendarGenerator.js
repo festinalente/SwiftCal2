@@ -106,7 +106,9 @@ function SwiftCal () {
 
   const emitDateSelectedEvent = debounce(() => {
     const evt = new CustomEvent('dateSelect', {
-      detail: { date: proxyToPlainObjectHelper(dynamicData) }
+      detail: { date: proxyToPlainObjectHelper(dynamicData) },
+      bubbles: true,
+      composed: true
     });
     config.calendarContainer.dispatchEvent(evt);
   }, 250);

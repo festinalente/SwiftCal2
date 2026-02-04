@@ -19,4 +19,5 @@
 
 2026-02-04 Tomás Metcalfe <tomas@appyou.pro>
 
-* Improved event emission, debouncing events and returning a plain object with dates instead of a reference to the proxied data. 
+* Improved event emission, debouncing events and returning a plain object with dates instead of a reference to the proxied data.
+* Bubble boundary bug. 
