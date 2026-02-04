@@ -162,8 +162,6 @@ function SwiftCal () {
     config.backend = configObj.backend || false;
     config.displayBlocked = configObj.displayBlocked || false;
     config.datesOpen = configObj.datesOpen || false;
-
-    config.customClickEvent = configObj.customClickEvent || false;
   };
 
   this.generateCalendar = (configObj) => {
@@ -365,10 +363,6 @@ function SwiftCal () {
   function dateOnClickEvents (e) {
     const dateDiv = e.target;
     clickCount++;
-
-    if (config.customClickEvent) {
-      return config.customClickEvent(e);
-    }
 
     if (dynamicData.disabled) {
       return;

@@ -21,9 +21,11 @@
   opacity: 0.3;
 }
 .calendar .preloaded {
-  border-color: blue;
+  border-color: #ffcc33;
   border-style: solid;
   border-width: 3px;
+  border-radius: 1em;
+  background-color: #337ab7;
 }
 .calendar .timeSelect {
   padding: 0;

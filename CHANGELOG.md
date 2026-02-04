@@ -21,3 +21,4 @@
 
 * Improved event emission, debouncing events and returning a plain object with dates instead of a reference to the proxied data.
 * Bubble boundary bug. 
+* Changed pre-selected date styling. 
